@@ -323,16 +323,6 @@ document "soc_weekly_activity_overview" {
 
   # ================== THE REPORT BODY ======================
 
-  # Frontmatter for Pandoc
-  content frontmatter {
-    format = "yaml"
-    content = {
-      title = "SOC Weekly Activity Overview"
-      author = ["Clark Wilson, SOC team"]
-      date = "2024-08-08"
-    }
-  }
-
   title = "SOC Weekly Activity Overview"
 
   content text {
@@ -811,5 +801,19 @@ document "soc_weekly_activity_overview" {
     content text {
       value = "Feel free to reach out if you have any specific questions or require additional information regarding the provided report."
     }
+
   }
+
+  # Frontmatter for Pandoc
+  format md {
+    frontmatter = {
+      format = "yaml"
+      content = {
+        title = "SOC Weekly Activity Overview"
+        author = ["Clark Wilson, SOC team"]
+        date = "2024-08-08"
+      }
+    }
+  }
+
 }
