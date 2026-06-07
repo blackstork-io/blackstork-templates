@@ -45,7 +45,7 @@ We welcome contributions to this repository. If you have developed custom BlackS
 threat intelligence, incident response, secops or compliance reporting, consider sharing them here.
 
 Sharing your templates helps other security teams automate their workflows and establishes reporting
-best practices across the industry. To get started, review our contribution guidelines and submit a
+best practices across the industry. To get started, review our [contribution guidelines](CONTRIBUTING.md) and submit a
 pull request with your new templates or improvements to existing ones.
 
 ## License
