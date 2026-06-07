@@ -323,16 +323,6 @@ document "soc_weekly_activity_overview" {
 
   # ================== THE REPORT BODY ======================
 
-  # Frontmatter for Pandoc
-  content frontmatter {
-    format = "yaml"
-    content = {
-      title = "SOC Weekly Activity Overview"
-      author = ["Clark Wilson, SOC team"]
-      date = "2024-08-08"
-    }
-  }
-
   title = "SOC Weekly Activity Overview"
 
   content text {
@@ -349,7 +339,7 @@ document "soc_weekly_activity_overview" {
 
     title = "Exec Summary"
 
-    content openai_text {
+    content llm_text {
 
       local_var = query_jq(
         join("\n", [
@@ -372,7 +362,6 @@ document "soc_weekly_activity_overview" {
         ])
       )
 
-      model = "gpt-4o"
       prompt = <<-EOT
         As a security analyst, write an executive summary of the operational metrics for SOC for the
         current reporting period. The metrics are listed below. In the summary, prioritise metrics that
@@ -415,7 +404,7 @@ document "soc_weekly_activity_overview" {
         ]
       }
 
-      content openai_text {
+      content llm_text {
         local_var = query_jq(
           <<-EOT
             .data.elasticsearch.alerts_curr_w_impact.hits.hits
@@ -427,8 +416,6 @@ document "soc_weekly_activity_overview" {
             })
           EOT
         )
-
-        model = "gpt-4o"
 
         prompt = <<-EOT
           Describe the alerts with materialized risks seen in the last week using the data
@@ -811,5 +798,19 @@ document "soc_weekly_activity_overview" {
     content text {
       value = "Feel free to reach out if you have any specific questions or require additional information regarding the provided report."
     }
+
   }
+
+  # Frontmatter for Pandoc
+  format md {
+    frontmatter = {
+      format = "yaml"
+      content = {
+        title = "SOC Weekly Activity Overview"
+        author = ["Clark Wilson, SOC team"]
+        date = "2024-08-08"
+      }
+    }
+  }
+
 }
