@@ -339,7 +339,7 @@ document "soc_weekly_activity_overview" {
 
     title = "Exec Summary"
 
-    content openai_text {
+    content llm_text {
 
       local_var = query_jq(
         join("\n", [
@@ -362,7 +362,6 @@ document "soc_weekly_activity_overview" {
         ])
       )
 
-      model = "gpt-4o"
       prompt = <<-EOT
         As a security analyst, write an executive summary of the operational metrics for SOC for the
         current reporting period. The metrics are listed below. In the summary, prioritise metrics that
@@ -405,7 +404,7 @@ document "soc_weekly_activity_overview" {
         ]
       }
 
-      content openai_text {
+      content llm_text {
         local_var = query_jq(
           <<-EOT
             .data.elasticsearch.alerts_curr_w_impact.hits.hits
@@ -417,8 +416,6 @@ document "soc_weekly_activity_overview" {
             })
           EOT
         )
-
-        model = "gpt-4o"
 
         prompt = <<-EOT
           Describe the alerts with materialized risks seen in the last week using the data
