@@ -6,10 +6,6 @@
 
 [blackstork-cli](https://github.com/blackstork-io/blackstork-cli) | [blackstork-cli docs](https://blackstork.io/fabric/docs/)
 
-<br/>
-
-![GitHub Repository stars](https://img.shields.io/github/stars/blackstork-io/blackstork-templates?style=social)
-
 </div>
 
 **BlackStork** is a declarative document generation engine designed to automate reporting workflows for cybersecurity teams. Using [BlackStork Configuration Language](https://blackstork.io/fabric/docs/language/) (BCL, based on HashiCorp Configuration Language, HCL), BlackStork builds and evaluates a document definition (with defined data inputs, content blocks, and output formats) to fetch data from external APIs, process the payloads natively using [`jq`](https://jqlang.org/manual/), and render the output. Its primary purpose is to eliminate manual data aggregation by automatically transforming raw security data into human-readable documents.
