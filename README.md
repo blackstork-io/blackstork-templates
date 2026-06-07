@@ -5,12 +5,14 @@
 # BlackStork Templates
 
 [blackstork-cli](https://github.com/blackstork-io/blackstork-cli) | [blackstork-cli docs](https://blackstork.io/fabric/docs/)
+<br/>
 
 </div>
 
-**BlackStork** is a declarative document generation engine designed to automate reporting workflows for cybersecurity teams. Using [BlackStork Configuration Language](https://blackstork.io/fabric/docs/language/) (BCL, based on HashiCorp Configuration Language, HCL), BlackStork builds and evaluates a document definition (with defined data inputs, content blocks, and output formats) to fetch data from external APIs, process the payloads natively using [`jq`](https://jqlang.org/manual/), and render the output. Its primary purpose is to eliminate manual data aggregation by automatically transforming raw security data into human-readable documents.
+**BlackStork** is a declarative document generation engine designed to automate reporting workflows for cybersecurity teams. Its primary purpose is to eliminate manual report production work by automatically collating and transforming security data from various sources and databases into human-readable documents.
 
-This repository provides a collection of open-source BlackStork templates ready for deployment or customization. By applying these templates, security engineers, threat analysts and securty operators can rapidly generate standardized, production-ready outputs for their stakeholders. These templates can be used both in [BlackStork SaaS](https://blackstork.io) and with [`blackstork-cli`](https://github.com/blackstork-io/blackstork-cli) tool.
+This repository provides a collection of open-source templates (written in  [BlackStork Configuration Language](https://blackstork.io/fabric/docs/language/)) ready for deployment or customization. By applying these templates, security engineers, threat analysts and securty operators can rapidly generate standardized, production-ready outputs for their stakeholders. These templates can be used both in [BlackStork SaaS](https://blackstork.io) and with [`blackstork-cli`](https://github.com/blackstork-io/blackstork-cli) tool.
+
 
 ## Templates
 
