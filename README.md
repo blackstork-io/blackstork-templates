@@ -1,54 +1,52 @@
 <!-- markdownlint-disable -->
 
 <div align="center">
-  
-# <img src=".github/fabric.svg" alt="Fabric logo" width="25px"/> Fabric Templates
+
+# BlackStork Templates
+
+[blackstork-cli](https://github.com/blackstork-io/blackstork-cli) | [blackstork-cli docs](https://blackstork.io/fabric/docs/)
 
 <br/>
 
-[Fabric GitHub](https://github.com/blackstork-io/fabric) | [Fabric Docs](https://blackstork.io/fabric/docs/) | [Community Slack](https://fabric-community.slack.com/)
-
-<br/>
-
-![GitHub Repository stars](https://img.shields.io/github/stars/blackstork-io/fabric-templates?style=social)
-[![Join Slack](https://img.shields.io/badge/slack-join-8F87F7)](https://fabric-community.slack.com/)
+![GitHub Repository stars](https://img.shields.io/github/stars/blackstork-io/blackstork-templates?style=social)
 
 </div>
 
-The repository contains open-source templates for [Fabric](https://github.com/blackstork-io/fabric). #Reporting-As-Code
+**BlackStork** is a declarative document generation engine designed to automate reporting workflows for cybersecurity teams. Using [BlackStork Configuration Language](https://blackstork.io/fabric/docs/language/) (BCL, based on HashiCorp Configuration Language, HCL), BlackStork builds and evaluates a document definition (with defined data inputs, content blocks, and output formats) to fetch data from external APIs, process the payloads natively using [`jq`](https://jqlang.org/manual/), and render the output. Its primary purpose is to eliminate manual data aggregation by automatically transforming raw security data into human-readable documents.
 
-**Fabric** is an open-source Command Line Interface (CLI) tool coupled with a configuration language designed to encode and automate content generation for cyber-security and compliance.
-
-Fabric generates documents based on modular templates written in [Fabric Configuration Language](https://blackstork.io/fabric/docs/language/) (FCL). Template authors can delineate data requirements and content structures within the template, significantly reducing the manual effort associated with data consolidation and improving re-usability.
+This repository provides a collection of open-source BlackStork templates ready for deployment or customization. By applying these templates, security engineers, threat analysts and securty operators can rapidly generate standardized, production-ready outputs for their stakeholders. These templates can be used both in [BlackStork SaaS](https://blackstork.io) and with [`blackstork-cli`](https://github.com/blackstork-io/blackstork-cli) tool.
 
 ## Templates
 
 - SecOps:
-    - [SOC Weekly Activity Overview Template](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/secops/soc-weekly-activity-overview-elastic-security.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/secops/soc-weekly-activity-overview-elastic-security.md))
+    - [SOC Weekly Activity Overview Template](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/secops/soc-weekly-activity-overview-elastic-security.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/secops/soc-weekly-activity-overview-elastic-security.md))
 - Penetration Testing:
   - [Offensive Security](https://www.offsec.com/) exam reports:
-    - [OSCE Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osce-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osce-exam-report.md))
-    - [OSCP Penetration Test Report](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oscp-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oscp-exam-report.md))
-    - [OSDA Exam Report](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osda-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osda-exam-report.md))
-    - [OSED Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osed-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osed-exam-report.md))
-    - [OSEE Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osee-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osee-exam-report.md))
-    - [OSEP Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osep-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osep-exam-report.md))
-    - [OSMR Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osmr-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-osmr-exam-report.md))
-    - [OSWA Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oswa-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oswa-exam-report.md))
-    - [OSWE Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oswe-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oswe-exam-report.md))
-    - [OSWP Exam Documentation](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oswp-exam-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/pentesting/offsec-oswp-exam-report.md))
+    - [OSCE Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osce-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osce-exam-report.md))
+    - [OSCP Penetration Test Report](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oscp-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oscp-exam-report.md))
+    - [OSDA Exam Report](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osda-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osda-exam-report.md))
+    - [OSED Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osed-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osed-exam-report.md))
+    - [OSEE Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osee-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osee-exam-report.md))
+    - [OSEP Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osep-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osep-exam-report.md))
+    - [OSMR Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osmr-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-osmr-exam-report.md))
+    - [OSWA Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oswa-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oswa-exam-report.md))
+    - [OSWE Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oswe-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oswe-exam-report.md))
+    - [OSWP Exam Documentation](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oswp-exam-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/pentesting/offsec-oswp-exam-report.md))
 - Cyber Threat Intelligence:
   - MITRE CTID CTI Blueprints ([source](https://mitre-engenuity.org/cybersecurity/center-for-threat-informed-defense/our-work/cti-blueprints/))
-    - [Campaign Report Template](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-campaign-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-campaign-report.md))
-    - [Executive Report Template](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-executive-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-executive-report.md))
-    - [Intrusion Analysis Report Template](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-intrusion-analysis-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-intrusion-analysis-report.md))
-    - [Threat Actor Profile Report Template](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-threat-actor-profile-report.fabric) ([example](https://github.com/blackstork-io/fabric-templates/tree/main/cybersec/cti/mitre-ctid-threat-actor-profile-report.md))
+    - [Campaign Report Template](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-campaign-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-campaign-report.md))
+    - [Executive Report Template](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-executive-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-executive-report.md))
+    - [Intrusion Analysis Report Template](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-intrusion-analysis-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-intrusion-analysis-report.md))
+    - [Threat Actor Profile Report Template](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-threat-actor-profile-report.fabric) ([example](https://github.com/blackstork-io/blackstork-templates/tree/main/cybersec/cti/mitre-ctid-threat-actor-profile-report.md))
 
 ## Contributions
 
-We invite you to contribute your expertise to help build a robust collection of templates that streamline and enhance essential communication processes. Whether you specialize in security reporting, incident response, or related areas, your contributions can make a significant impact.
+We welcome contributions to this repository. If you have developed custom BlackStork templates for
+threat intelligence, incident response, secops or compliance reporting, consider sharing them here.
 
-Join us in creating a collaborative space where professionals can share best practices and innovative solutions for effective communication. Your input is crucial as we work towards developing a repository that addresses the evolving needs of our community. Together we can build a valuable resource for practitioners worldwide.
+Sharing your templates helps other security teams automate their workflows and establishes reporting
+best practices across the industry. To get started, review our [contribution guidelines](CONTRIBUTING.md) and submit a
+pull request with your new templates or improvements to existing ones.
 
 ## License
 
