@@ -4,14 +4,14 @@
 
 # BlackStork Templates
 
-[blackstork-cli](https://github.com/blackstork-io/blackstork-cli) | [blackstork-cli docs](https://blackstork.io/fabric/docs/)
+[BlackStork](https://blackstork.io) | [blackstork-cli](https://github.com/blackstork-io/blackstork-cli) | [BlackStork docs](https://blackstork.io/docs/)
 <br/>
 
 </div>
 
 **BlackStork** is a declarative document generation engine designed to automate reporting workflows for cybersecurity teams. Its primary purpose is to eliminate manual report production work by automatically collating and transforming security data from various sources and databases into human-readable documents.
 
-This repository provides a collection of open-source templates (written in  [BlackStork Configuration Language](https://blackstork.io/fabric/docs/language/)) ready for deployment or customization. By applying these templates, security engineers, threat analysts and securty operators can rapidly generate standardized, production-ready outputs for their stakeholders. These templates can be used both in [BlackStork SaaS](https://blackstork.io) and with [`blackstork-cli`](https://github.com/blackstork-io/blackstork-cli) tool.
+This repository provides a collection of open-source templates (written in [BlackStork Configuration Language](https://blackstork.io/docs/language/)) ready for deployment or customization. By applying these templates, security engineers, threat analysts and securty operators can rapidly generate standardized, production-ready outputs for their stakeholders. These templates can be used both in [BlackStork SaaS Platform](https://blackstork.io) and with [`blackstork-cli`](https://github.com/blackstork-io/blackstork-cli) tool.
 
 
 ## Templates
