@@ -1,0 +1,488 @@
+<!DOCTYPE html
+<html lang="en" class="h-full text-black bg-white dark:bg-raisinBlack dark:text-raisinBlack-50">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="./styles.css" rel="stylesheet"/>
+  <title id="page-title">Data</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.0/dist/mermaid.min.js"></script>
+  <script>
+    Chart.register({
+      id: 'NoData',
+      afterDraw: function (chart) {
+        if (chart.data.datasets.map((d) => d.data.length).reduce((p, a) => p + a, 0) === 0) {
+          const ctx = chart.ctx;
+          const width = chart.width;
+          const height = chart.height;
+          chart.clear();
+
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = `2.5rem`;
+          ctx.fillText('No data to display', width / 2, height / 2);
+          ctx.restore();
+        }
+      },
+    });
+  </script>
+</head>
+<body class="h-full">
+
+<main class="p-10 prose max-w-screen-lg mx-auto">
+
+<h1 id="soc-weekly-activity-overview">SOC Weekly Activity Overview</h1>
+
+<p>
+As part of our ongoing commitment to transparency and collaboration,
+we are sharing the weekly overview report for the Security Operations
+Center (SOC) activities for the week between Mon, Jul 01, 2024 00:00:00
+CEST and Sun, Jul 07, 2024 23:59:59 CEST.
+</p>
+
+<h2 id="exec-summary">Exec Summary</h2>
+
+<p>During the current reporting period, the cybersecurity team addressed
+10 critical alerts, with 4 resolved within the one-hour SLA and an
+average response time of 0.43 hours. High-severity alerts numbered 135,
+with 120 handled within the three-hour SLA, averaging 2.4 hours for
+response. Medium-severity alerts saw 3960 out of 7018 resolved within
+the six-hour SLA, with an average response time of 7.3 hours.
+Low-severity alerts had 900 out of 1557 resolved within the 24-hour SLA,
+with an average response time of 8.3 hours.</p>
+<p>Notable incidents included high-severity threats such as “Volume
+Shadow Copy Deletion via WMIC” and “Process Created with an Elevated
+Token,” which represent significant risks. The false-positive rate was
+41.03%, with 3580 false positives and 5145 true positives identified.
+The team adjusted detection capabilities by disabling three and enabling
+five new rules, with a total of 1161 active rules. Analyst coverage
+remained consistent with eight analysts on shift.</p>
+
+<h3 id="materialized-risk">Materialized risk</h3>
+
+<p>There were 5 alerts in the current week with materialised risk.</p>
+<table class="max-w-screen-md">
+    <thead>
+        <tr>
+            <th>Rule Name</th>
+            <th>Severity</th>
+            <th>Alerts</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Volume Shadow Copy Deletion via WMIC</td>
+            <td>high</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Process Created with an Elevated Token</td>
+            <td>high</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Uncommon Registry Persistence Change</td>
+            <td>medium</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Windows Event Logs Cleared</td>
+            <td>low</td>
+            <td>2</td>
+        </tr>
+    </tbody>
+</table>
+<p>In the past week, we have observed several critical security alerts
+with materialized risks. There was a high-severity alert for “Volume
+Shadow Copy Deletion via WMIC,” indicating the use of wmic.exe to delete
+shadow copies, often linked to ransomware or other destructive attacks.
+Another high-severity alert, “Process Created with an Elevated Token,”
+highlighted the creation of a process running with SYSTEM privileges,
+suggesting an adversary’s attempt to escalate privileges and bypass
+access controls. A medium-severity alert, “Uncommon Registry Persistence
+Change,” detected modifications to registry persistence keys,
+potentially indicating a stealthy persistence attempt by an adversary.
+Additionally, there were two low-severity alerts for “Windows Event Logs
+Cleared,” identifying attempts to clear event log stores, a common
+tactic used by attackers to evade detection and destroy forensic
+evidence.</p>
+<h2 id="kpis">KPIs</h2>
+<h3 id="sla-metrics">SLA Metrics</h3>
+<table class="max-w-screen-md">
+    <thead>
+        <tr>
+            <th>Severity</th>
+            <th>Alerts</th>
+            <th>Limit</th>
+            <th>SLA met / not met</th>
+            <th>% met</th>
+            <th>TimeToRespond</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>critical</td>
+            <td>5</td>
+            <td>&lt;= 1h</td>
+            <td>4/1</td>
+            <td>80%</td>
+            <td>0.43h</td>
+        </tr>
+        <tr>
+            <td>high</td>
+            <td>135</td>
+            <td>&lt;= 3h</td>
+            <td>120/15</td>
+            <td>88.89%</td>
+            <td>2.4h</td>
+        </tr>
+        <tr>
+            <td>medium</td>
+            <td>7028</td>
+            <td>&lt;= 6h</td>
+            <td>3960/3068</td>
+            <td>56.34%</td>
+            <td>7.3h</td>
+        </tr>
+        <tr>
+            <td>low</td>
+            <td>1557</td>
+            <td>&lt;= 24h</td>
+            <td>900/657</td>
+            <td>57.80%</td>
+            <td>22.3h</td>
+        </tr>
+    </tbody>
+</table>
+<h3 id="true-false-positives-resolved-before-risk-materialisation">True
+    / False Positives resolved before risk materialisation</h3>
+<ul>
+    <li><em>True Positives</em>: 5145</li>
+    <li><em>False Positives</em>: 3580</li>
+    <li><em>FP %</em>: 41.03%</li>
+</ul>
+<h3 id="estate-coverage">Estate coverage</h3>
+<h4 id="fleet-agents">Fleet agents</h4>
+<ul>
+    <li>New agents enrolled in the current week: 13 (+5&uarr;)</li>
+    <li>Agents that missed their check-in: 4</li>
+</ul>
+
+<h4 id="detection-rules">Detection rules</h4>
+
+<p>Rule status changes in the current week:</p>
+
+<table class="max-w-screen-lg">
+    <thead>
+        <tr>
+            <th>Enabled rules (5)</th>
+            <th>Disabled rules (3)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <ul>
+                    <li>AWS Bedrock Guardrails Detected Multiple Violations by a Single User Over a Session</li>
+                    <li>AWS Config Resource Deletion</li>
+                    <li>AWS EC2 EBS Snapshot Shared with Another Account</li>
+                    <li>Suspicious JAVA Child Process</li>
+                    <li>Potential Shell via Wildcard Injection Detected</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>Potential Successful SSH Brute Force Attack</li>
+                    <li>Suspicious macOS MS Office Child Process</li>
+                    <li>Unexpected Child Process of macOS Screensaver Engine</li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p><em>Overall enabled rules</em>: 1161</p>
+
+<h2 id="rule-performance">Rule Performance</h2>
+
+<h3>Rules producing the most false positive alerts</h3>
+
+<table class="max-w-screen-lg">
+    <thead>
+        <tr>
+            <th>Rule</th>
+            <th>Severity</th>
+            <th>False Positives</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Suspicious JAVA Child Process</td>
+            <td>medium</td>
+            <td>87</td>
+        </tr>
+        <tr>
+            <td>Suspicious macOS MS Office Child Process</td>
+            <td>medium</td>
+            <td>33</td>
+        </tr>
+        <tr>
+            <td>Unexpected Child Process of macOS Screensaver Engine</td>
+            <td>medium</td>
+            <td>30</td>
+        </tr>
+        <tr>
+            <td>Potential Cross Site Scripting (XSS)</td>
+            <td>low</td>
+            <td>27</td>
+        </tr>
+        <tr>
+            <td>Linux User Added to Privileged Group</td>
+            <td>low</td>
+            <td>15</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Rules failing the most:</h3>
+
+<table class="max-w-screen-md">
+    <thead>
+        <tr>
+            <th>Rule</th>
+            <th>Failures</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Unusual Web Request</td><td>210</td></tr>
+        <tr><td>Unusual DNS Activity</td><td>176</td></tr>
+        <tr><td>Unusual Country For an AWS Command</td><td>150</td></tr>
+        <tr><td>Port Forwarding Rule Addition</td><td>73</td></tr>
+        <tr><td>Potential Privilege Escalation via Service ImagePath Modification</td><td>30</td></tr>
+    </tbody>
+</table>
+
+<h2 id="analytical-load">Analytical Load</h2>
+<h3 id="alerts-overview">Alerts Overview</h3>
+<p>8725 alerts were created last week.</p>
+
+<div class="card not-prose print:w-auto rounded-lg shadow-lg print:shadow-none print:border print:border-1 print:border-slate-200 print:border-solid p-5 max-w-screen-lg">
+    <h5 class="text-slate-500 uppercase font-bold text-xs">Alerts per day</h5>
+    <canvas id="alerts-per-day" class="w-full"></canvas>
+</div>
+
+<script>
+  new Chart(
+      document.getElementById('alerts-per-day'),
+      {
+          type: 'bar',
+          data: {
+              datasets: [
+                    {
+                        data: [
+                            {"x": "2024-07-01", "y": 1189},
+                            {"x": "2024-07-02", "y": 1246},
+                            {"x": "2024-07-03", "y": 1319},
+                            {"x": "2024-07-04", "y": 1205},
+                            {"x": "2024-07-05", "y": 1259},
+                            {"x": "2024-07-06", "y": 1211},
+                            {"x": "2024-07-07", "y": 1296},
+                        ],
+                        label: "Alerts count",
+                        fill: true,
+                        yAxisID: 'y',
+                        order: 0,
+                    },
+              ],
+          },
+          options: {
+              responsive: true,
+              plugins: {
+                  tooltip: {
+                      mode: 'index'
+                  },
+              },
+              interaction: {
+                  mode: 'nearest',
+                  axis: 'x',
+                  intersect: false
+              },
+              scales: {
+                  y: {
+                      title: {
+                          display: true,
+                          text: 'Alerts'
+                      },
+                  },
+              },
+          },
+      }
+    );
+</script>
+
+<table class="max-w-screen-md">
+    <thead>
+        <tr>
+            <th>Severity</th>
+            <th>Alerts</th>
+            <th>Alerts (week before)</th>
+            <th>Change</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>critical</td>
+            <td>10</td>
+            <td>3</td>
+            <td>+233.33%</td>
+        </tr>
+        <tr>
+            <td>high</td>
+            <td>135</td>
+            <td>217</td>
+            <td>-37.79%</td>
+        </tr>
+        <tr>
+            <td>medium</td>
+            <td>7018</td>
+            <td>7210</td>
+            <td>-2.5%</td>
+        </tr>
+        <tr>
+            <td>low</td>
+            <td>1557</td>
+            <td>876</td>
+            <td>+77.73%</td>
+        </tr>
+    </tbody>
+</table>
+<ul>
+    <li>MTTR: 7.29h</li>
+    <li>95th percentile: 7.1h</li>
+</ul>
+<h3 id="alerts-per-on-duty-analyst">Alerts per on-duty analyst</h3>
+<ul>
+    <li><em>Unattended hours</em>: 0h with 0 alerts</li>
+    <li><em>Dead hours without any alerts</em>: 0h</li>
+</ul>
+<table class="max-w-screen-md">
+    <thead>
+        <tr>
+            <th>Analyst</th>
+            <th>Shifts</th>
+            <th>Hours alone</th>
+            <th>Avg alerts/h</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Clark Wilson</td>
+            <td>3</td>
+            <td>0</td>
+            <td>24.82</td>
+        </tr>
+        <tr>
+            <td>Dane Harding</td>
+            <td>4</td>
+            <td>24</td>
+            <td>37.03</td>
+        </tr>
+        <tr>
+            <td>Dion Ballard</td>
+            <td>4</td>
+            <td>0</td>
+            <td>26.61</td>
+        </tr>
+        <tr>
+            <td>Elnora Hebert</td>
+            <td>4</td>
+            <td>0</td>
+            <td>26.61</td>
+        </tr>
+        <tr>
+            <td>Gerard Harrison</td>
+            <td>3</td>
+            <td>0</td>
+            <td>28.26</td>
+        </tr>
+        <tr>
+            <td>Marlene Shaffer</td>
+            <td>3</td>
+            <td>0</td>
+            <td>28.26</td>
+        </tr>
+        <tr>
+            <td>Minerva Stout</td>
+            <td>3</td>
+            <td>0</td>
+            <td>24.82</td>
+        </tr>
+        <tr>
+            <td>Steve Acosta</td>
+            <td>2</td>
+            <td>0</td>
+            <td>23.83</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<pre class="mermaid bg-white">
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: #B2B2CC;
+    font-size: 8
+---
+gantt
+    title Analyst shifts in the week between 2024-07-01 00:00 and 2024-07-07 23:59
+    weekday Monday
+    tickInterval 1d
+    todayMarker off
+    dateFormat YYYY-MM-DDTHH:mm
+    axisFormat %a, %H
+
+    section Clark Wilson
+        shift          :low, 2024-07-17T12:00,2024-07-17T23:59
+        shift          :medium, 2024-07-18T12:00,2024-07-18T23:59
+        shift          :medium, 2024-07-21T12:00,2024-07-21T23:59
+    section Dane Harding
+        shift          :low, 2024-07-15T12:00,2024-07-15T23:59
+        shift          :medium, 2024-07-16T12:00,2024-07-16T23:59
+        shift          :high, 2024-07-19T12:00,2024-07-19T23:59
+        shift          :medium, 2024-07-20T12:00,2024-07-20T23:59
+    section Dion Ballard
+        shift          :medium, 2024-07-15T00:00,2024-07-15T12:00
+        shift          :low, 2024-07-16T00:00,2024-07-16T12:00
+        shift          :low, 2024-07-19T00:00,2024-07-19T12:00
+        shift          :medium, 2024-07-20T00:00,2024-07-20T12:00
+    section Elnora Hebert
+        shift          :low, 2024-07-15T00:00,2024-07-15T12:00
+        shift          :low, 2024-07-16T00:00,2024-07-16T12:00
+        shift          :low, 2024-07-19T00:00,2024-07-19T12:00
+        shift          :low, 2024-07-20T00:00,2024-07-20T12:00
+    section Gerard Harrison
+        shift          :medium, 2024-07-17T00:00,2024-07-17T12:00
+        shift          :medium, 2024-07-18T00:00,2024-07-18T12:00
+        shift          :medium, 2024-07-21T00:00,2024-07-21T12:00
+    section Marlene Shaffer
+        shift          :low, 2024-07-17T00:00,2024-07-17T12:00
+        shift          :low, 2024-07-18T00:00,2024-07-18T12:00
+        shift          :medium, 2024-07-21T00:00,2024-07-21T12:00
+    section Minerva Stout
+        shift          :low, 2024-07-17T12:00,2024-07-17T23:59
+        shift          :low, 2024-07-18T12:00,2024-07-18T23:59
+        shift          :medium, 2024-07-21T12:00,2024-07-21T23:59
+    section Steve Acosta
+        shift          :medium, 2024-07-15T12:00,2024-07-15T23:59
+        shift          :medium, 2024-07-16T12:00,2024-07-16T23:59
+</pre>
+
+<h2 id="feedback">Feedback</h2>
+<p>
+Feel free to reach out if you have any specific questions or require additional information regarding the provided report.
+</p>
+</main>
+</body>
+</html>
