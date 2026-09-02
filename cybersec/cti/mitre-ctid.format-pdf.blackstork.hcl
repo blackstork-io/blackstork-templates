@@ -94,6 +94,18 @@ format pdf "mitre_ctid" {
   HTML
 
   document_css = <<-CSS
+    .pdf-cover {
+      width: 297mm !important;
+      height: 210mm !important;
+      min-height: 210mm !important;
+      background: #071826 !important;
+    }
+    .pdf-cover > div {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 100% !important;
+    }
+
     .ctid-report {
       width: 100% !important;
       margin: 0 !important;
@@ -148,10 +160,10 @@ format pdf "mitre_ctid" {
     .ctid-key-points li { min-height: 0 !important; padding: 7pt 9pt !important; }
     .ctid-probability { padding: 12pt !important; break-inside: avoid !important; page-break-inside: avoid !important; }
 
-    .ctid-data-section {
-      break-before: page !important;
-      page-break-before: always !important;
-    }
+//     .ctid-data-section {
+//       break-before: page !important;
+//       page-break-before: always !important;
+//     }
     .ctid-data-section section:first-child { margin-top: 0 !important; }
 
     .ctid-table-wrap {
