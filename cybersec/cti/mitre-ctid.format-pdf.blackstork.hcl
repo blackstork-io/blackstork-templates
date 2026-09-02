@@ -3,6 +3,7 @@ format pdf "ctid_mitre" {
     name        = "MITRE CTI Blueprint PDF Format"
     description = "An A4 landscape PDF format for professional cyber threat intelligence reports."
     license     = "Apache License 2.0"
+    authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
     tags        = ["mitre", "ctid", "pdf", "threat-intelligence"]
     updated_at  = "2026-09-02T00:00:00Z"
   }

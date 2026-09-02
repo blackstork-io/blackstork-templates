@@ -4,6 +4,7 @@ document "mitre_ctid_intrusion_analysis_report" {
     description = "A dynamic intrusion-analysis Blueprint rendered from STIX 2.1 observations."
     url         = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
     license     = "Apache License 2.0"
+    authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
     tags        = ["mitre", "ctid", "intrusion-analysis", "stix2"]
     updated_at  = "2026-09-01T00:00:00Z"
   }

@@ -2,27 +2,40 @@
 # normalizes its STIX 2.1 bundle into `.vars.report` before using these blocks.
 
 content table "ctid_report_identity" {
-  rows = [{
-    title          = query_jq(".vars.report.title")
-    producer_name  = query_jq(".vars.report_metadata.producer_name")
-    producer_unit  = query_jq(".vars.report_metadata.producer_unit")
-    product_type   = query_jq(".vars.report_metadata.product_type")
-    handling       = query_jq(".vars.report_metadata.handling")
-    tagline        = query_jq(".vars.report_metadata.tagline")
-    generated_with = query_jq(".vars.report_metadata.generated_with")
-  }]
+  meta {
+    name = "CTID Report Identity"
+    description = "Report producer, handling, product, and generation metadata."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "report-metadata"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   columns = [
-    { header = "Report", value = "{{ .row.value.title }}" },
-    { header = "Producer", value = "{{ .row.value.producer_name }}" },
-    { header = "Unit", value = "{{ .row.value.producer_unit }}" },
-    { header = "Product", value = "{{ .row.value.product_type }}" },
-    { header = "Handling", value = "{{ .row.value.handling }}" },
-    { header = "Purpose", value = "{{ .row.value.tagline }}" },
-    { header = "Generated with", value = "{{ .row.value.generated_with }}" }
+    { header = "Property", value = "**{{ .row.value.property }}:**" },
+    { header = "Value", value = "{{ .row.value.value }}" }
+  ]
+  rows = [
+    { property = "Report", value = query_jq(".vars.report.title") },
+    { property = "Producer", value = query_jq(".vars.report_metadata.producer_name") },
+    { property = "Unit", value = query_jq(".vars.report_metadata.producer_unit") },
+    { property = "Product", value = query_jq(".vars.report_metadata.product_type") },
+    { property = "Handling", value = query_jq(".vars.report_metadata.handling") },
+    { property = "Purpose", value = query_jq(".vars.report_metadata.tagline") },
+    { property = "Generated with", value = query_jq(".vars.report_metadata.generated_with") }
   ]
 }
 
 section "ctid_executive_summary" {
+  meta {
+    name = "CTID Executive Summary"
+    description = "Bottom-line assessment for the report's intended audience."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "executive-summary"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Executive Summary"
   content text {
     is_included = query_jq(".inputs.use_llm | not")
@@ -46,6 +59,15 @@ section "ctid_executive_summary" {
 }
 
 section "ctid_key_points" {
+  meta {
+    name = "CTID Key Points"
+    description = "At-a-glance subject, attribution, probability, and audience details."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "key-points"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Key Points"
   content list {
     items = [
@@ -60,6 +82,15 @@ section "ctid_key_points" {
 }
 
 section "ctid_assessment" {
+  meta {
+    name = "CTID Assessment"
+    description = "Principal analytic judgment, confidence, and intelligence limitations."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "assessment"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Assessment"
   content text {
     is_included = query_jq(".inputs.use_llm | not")
@@ -85,6 +116,15 @@ section "ctid_assessment" {
 }
 
 section "ctid_key_intelligence_gaps" {
+  meta {
+    name = "CTID Key Intelligence Gaps"
+    description = "Material unknowns that qualify the assessment or guide collection."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "intelligence-gaps"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Key Intelligence Gaps"
   content list {
     is_included   = query_jq("(.vars.report.intelligence_gaps // []) | length > 0")
@@ -99,6 +139,15 @@ section "ctid_key_intelligence_gaps" {
 }
 
 section "ctid_probability_matrix" {
+  meta {
+    name = "CTID Probability Matrix"
+    description = "Standardized probability language for the principal analytic judgment."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "probability"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Probability Matrix"
   content text {
     value = "The marker identifies the probability of the principal analytic judgment."
@@ -118,6 +167,15 @@ section "ctid_probability_matrix" {
 }
 
 section "ctid_intel_requirements" {
+  meta {
+    name = "CTID Intelligence Requirements"
+    description = "Priority intelligence requirements supported by the report."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "intelligence-requirements"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Intelligence Requirements"
   content list {
     is_included   = query_jq("(.vars.report.intelligence_requirements // []) | length > 0")
@@ -132,6 +190,15 @@ section "ctid_intel_requirements" {
 }
 
 section "ctid_feedback" {
+  meta {
+    name = "CTID Feedback"
+    description = "Contact information for feedback and follow-up intelligence requirements."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "feedback"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Feedback"
   content text {
     is_included = query_jq("(.vars.report.feedback_contact // \"\") | length > 0")
@@ -144,6 +211,15 @@ section "ctid_feedback" {
 }
 
 content table "ctid_mitre_attack" {
+  meta {
+    name = "CTID MITRE ATT&CK Table"
+    description = "ATT&CK techniques, procedures, defensive mappings, and deployed controls."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "attack", "table"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   is_included = query_jq("(.vars.report.attack // []) | length > 0")
   rows = query_jq(".vars.report.attack // []")
   columns = [
@@ -158,6 +234,15 @@ content table "ctid_mitre_attack" {
 }
 
 section "ctid_mitre_attack" {
+  meta {
+    name = "CTID MITRE ATT&CK Section"
+    description = "Report section presenting ATT&CK-aligned adversary behavior."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "attack"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "MITRE ATT&CK Table"
   content ref {
     base = content.table.ctid_mitre_attack
@@ -169,6 +254,15 @@ section "ctid_mitre_attack" {
 }
 
 section "ctid_timeline_of_activity" {
+  meta {
+    name = "CTID Timeline of Activity"
+    description = "Chronology of relevant threat activity, targeting, and observations."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "timeline"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Timeline of Activity"
   content table {
     is_included = query_jq("(.vars.report.timeline // []) | length > 0")
@@ -189,6 +283,15 @@ section "ctid_timeline_of_activity" {
 }
 
 section "ctid_iocs" {
+  meta {
+    name = "CTID Indicators of Compromise"
+    description = "Malware, network, and host indicators relevant to defensive action."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "indicators"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Indicators of Compromise (IOC)"
 
   section "malware" {
@@ -249,6 +352,15 @@ section "ctid_iocs" {
 }
 
 section "ctid_cves" {
+  meta {
+    name = "CTID Vulnerabilities"
+    description = "Vulnerabilities associated with the intelligence in scope."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "vulnerabilities"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Common Vulnerabilities and Exposures (CVEs)"
   content table {
     is_included = query_jq("(.vars.report.cves // []) | length > 0")
@@ -270,6 +382,15 @@ section "ctid_cves" {
 }
 
 section "ctid_signatures" {
+  meta {
+    name = "CTID Detection Signatures"
+    description = "Detection signatures derived from or associated with the assessment."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "signatures"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Signatures"
   content list {
     is_included   = query_jq("(.vars.report.signatures // []) | length > 0")
@@ -284,6 +405,15 @@ section "ctid_signatures" {
 }
 
 section "ctid_data_sources" {
+  meta {
+    name = "CTID Data Sources"
+    description = "External intelligence sources cited in the report."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "sources"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   title = "Data Sources"
   content list {
     is_included   = query_jq("(.vars.report.sources // []) | length > 0")
@@ -298,6 +428,15 @@ section "ctid_data_sources" {
 }
 
 content table "ctid_metadata" {
+  meta {
+    name = "CTID Intelligence Metadata"
+    description = "Product-specific intelligence metadata presented as property-value rows."
+    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license = "Apache License 2.0"
+    authors = ["Sergey Polzunov <sergey@blackstork.io>"]
+    tags = ["mitre", "ctid", "metadata", "table"]
+    updated_at = "2026-09-02T00:00:00Z"
+  }
   is_included = query_jq("(.vars.report.metadata // []) | length > 0")
   rows = query_jq(".vars.report.metadata // []")
   columns = [

@@ -4,6 +4,7 @@ document "mitre_ctid_threat_actor_profile_report" {
     description = "A dynamic threat-actor profile Blueprint rendered from STIX 2.1 data."
     url         = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
     license     = "Apache License 2.0"
+    authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
     tags        = ["mitre", "ctid", "threat-actor", "stix2"]
     updated_at  = "2026-09-01T00:00:00Z"
   }

@@ -3,6 +3,7 @@ format html "ctid_mitre" {
     name        = "MITRE CTI Blueprint HTML Format"
     description = "A professional web format for decision-oriented cyber threat intelligence reports."
     license     = "Apache License 2.0"
+    authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
     tags        = ["mitre", "ctid", "html", "threat-intelligence"]
     updated_at  = "2026-09-02T00:00:00Z"
   }
@@ -283,21 +284,20 @@ format html "ctid_mitre" {
 
   template_per_block = {
     "content.table.ctid_report_identity" = <<-HTML
-      {{ $row := index .rows_html 0 }}
       <header class="ctid-web-header">
         <div class="ctid-wordmark">
           <span class="ctid-mark" aria-hidden="true"></span>
-          <span class="ctid-name">{{ with index $row 1 }}{{ .value_html }}{{ end }}</span>
+          <span class="ctid-name">{{ (index (index .rows_html 1) 1).value_html }}</span>
         </div>
-        <div class="ctid-practice">{{ with index $row 2 }}{{ .value_html }}{{ end }} / {{ with index $row 3 }}{{ .value_html }}{{ end }}</div>
+        <div class="ctid-practice">{{ (index (index .rows_html 2) 1).value_html }} / {{ (index (index .rows_html 3) 1).value_html }}</div>
       </header>
       <div class="ctid-hero">
-        <div class="ctid-kicker">{{ with index $row 2 }}{{ .value_html }}{{ end }} · {{ with index $row 3 }}{{ .value_html }}{{ end }}</div>
-        <h1>{{ with index $row 0 }}{{ .value_html }}{{ end }}</h1>
-        <p class="ctid-hero-note">{{ with index $row 5 }}{{ .value_html }}{{ end }}</p>
+        <div class="ctid-kicker">{{ (index (index .rows_html 2) 1).value_html }} · {{ (index (index .rows_html 3) 1).value_html }}</div>
+        <h1>{{ (index (index .rows_html 0) 1).value_html }}</h1>
+        <p class="ctid-hero-note">{{ (index (index .rows_html 5) 1).value_html }}</p>
         <div class="ctid-hero-tags">
-          <span class="ctid-tag">{{ with index $row 4 }}{{ .value_html }}{{ end }}</span>
-          <span class="ctid-tag">{{ with index $row 3 }}{{ .value_html }}{{ end }}</span>
+          <span class="ctid-tag">{{ (index (index .rows_html 4) 1).value_html }}</span>
+          <span class="ctid-tag">{{ (index (index .rows_html 3) 1).value_html }}</span>
         </div>
       </div>
     HTML
