@@ -1,16 +1,16 @@
-format pdf "ctid_mitre" {
+format pdf "mitre_ctid" {
   meta {
     name        = "MITRE CTI Blueprint PDF Format"
     description = "An A4 landscape PDF format for professional cyber threat intelligence reports."
     license     = "Apache License 2.0"
     authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
     tags        = ["mitre", "ctid", "pdf", "threat-intelligence"]
-    updated_at  = "2026-09-02T00:00:00Z"
+    updated_at  = "2026-09-03T00:00:00Z"
   }
 
   # Damask uses this HTML format as the semantic and visual base before Paged.js
   # applies the print-specific rules below.
-  html_format = "ctid_mitre"
+  html_format = "mitre_ctid"
 
   page_size             = "A4 landscape"
   page_margins          = "17mm 16mm 18mm 16mm"
@@ -27,7 +27,7 @@ format pdf "ctid_mitre" {
 
   header_right = <<-HTML
     <div style="font-family: Consolas, 'Liberation Mono', monospace; color: #627586; font-size: 7pt; font-weight: 600; letter-spacing: 0.08em; line-height: 1; text-transform: uppercase; white-space: nowrap;">
-      {{ .vars.report_metadata.handling }} <span style="color: #b9c6d0; padding: 0 5pt;">·</span> {{ .vars.report.probability_label }}
+      {{ .vars.report.handling }} <span style="color: #b9c6d0; padding: 0 5pt;">·</span> {{ .vars.report.probability_label }}
     </div>
   HTML
 
@@ -37,7 +37,7 @@ format pdf "ctid_mitre" {
 
   footer_center = <<-HTML
     <div style="font-family: Consolas, 'Liberation Mono', monospace; color: #8a9aa7; font-size: 6.5pt; letter-spacing: 0.06em; line-height: 1; text-transform: uppercase; white-space: nowrap;">
-      {{ .vars.report_metadata.producer_name }} · {{ .vars.report_metadata.handling }}
+      {{ .vars.report_metadata.producer_name }} · {{ .vars.report.handling }}
     </div>
   HTML
 
@@ -91,7 +91,7 @@ format pdf "ctid_mitre" {
           <td style="padding: 5pt 20pt 0 0; border: 0; background: transparent; color: #8fa5b4; font-family: Consolas, 'Liberation Mono', monospace; font-size: 6.5pt; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;">Subject</td>
           <td style="padding: 5pt 20pt 0 0; border: 0; background: transparent; color: #ffffff; font-size: 9pt; font-weight: 500;">{{ .vars.report.subject }}</td>
           <td style="padding: 5pt 20pt 0 0; border: 0; background: transparent; color: #8fa5b4; font-family: Consolas, 'Liberation Mono', monospace; font-size: 6.5pt; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;">Handling</td>
-          <td style="padding: 5pt 0 0; border: 0; background: transparent; color: #ffffff; font-size: 9pt; font-weight: 500;">{{ .vars.report_metadata.producer_name }} · {{ .vars.report_metadata.handling }}</td>
+          <td style="padding: 5pt 0 0; border: 0; background: transparent; color: #ffffff; font-size: 9pt; font-weight: 500;">{{ .vars.report_metadata.producer_name }} · {{ .vars.report.handling }}</td>
         </tr>
       </table>
     </div>

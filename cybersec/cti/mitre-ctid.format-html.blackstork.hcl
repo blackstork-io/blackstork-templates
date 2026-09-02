@@ -1,11 +1,11 @@
-format html "ctid_mitre" {
+format html "mitre_ctid" {
   meta {
     name        = "MITRE CTI Blueprint HTML Format"
     description = "A professional web format for decision-oriented cyber threat intelligence reports."
     license     = "Apache License 2.0"
     authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
     tags        = ["mitre", "ctid", "html", "threat-intelligence"]
-    updated_at  = "2026-09-02T00:00:00Z"
+    updated_at  = "2026-09-03T00:00:00Z"
   }
 
   css_inline = <<-CSS
@@ -283,7 +283,7 @@ format html "ctid_mitre" {
   }
 
   template_per_block = {
-    "content.table.ctid_report_identity" = <<-HTML
+    "content.table.mitre_ctid_report_identity" = <<-HTML
       <header class="ctid-web-header">
         <div class="ctid-wordmark">
           <span class="ctid-mark" aria-hidden="true"></span>
@@ -302,39 +302,39 @@ format html "ctid_mitre" {
       </div>
     HTML
 
-    "section.ctid_executive_summary" = <<-HTML
+    "section.mitre_ctid_executive_summary" = <<-HTML
       <section class="ctid-bluf">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_key_points" = <<-HTML
+    "section.mitre_ctid_key_points" = <<-HTML
       <section class="ctid-key-points">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_mitre_attack" = <<-HTML
+    "section.mitre_ctid_attack" = <<-HTML
       <section class="ctid-data-section ctid-mitre-table">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_timeline_of_activity" = <<-HTML
+    "section.mitre_ctid_timeline_of_activity" = <<-HTML
       <section class="ctid-data-section">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_iocs" = <<-HTML
+    "section.mitre_ctid_iocs" = <<-HTML
       <section class="ctid-data-section ctid-ioc-section">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_cves" = <<-HTML
+    "section.mitre_ctid_cves" = <<-HTML
       <section class="ctid-data-section">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_probability_matrix" = <<-HTML
+    "section.mitre_ctid_probability_matrix" = <<-HTML
       <section class="ctid-probability">{{ .title }}{{ .content }}</section>
     HTML
 
-    "section.ctid_data_sources" = <<-HTML
+    "section.mitre_ctid_data_sources" = <<-HTML
       <section class="ctid-sources">{{ .title }}{{ .content }}</section>
     HTML
 
-    "content.table.ctid_mitre_attack" = <<-HTML
+    "content.table.mitre_ctid_attack" = <<-HTML
       <div class="ctid-table-wrap">
         <table>
           <thead><tr>{{ range .headers_html }}<th>{{ . }}</th>{{ end }}</tr></thead>
@@ -343,7 +343,7 @@ format html "ctid_mitre" {
       </div>
     HTML
 
-    "content.table.ctid_metadata" = <<-HTML
+    "content.table.mitre_ctid_metadata" = <<-HTML
       <div class="ctid-table-wrap ctid-metadata">
         <table>
           <tbody>{{ range .rows_html }}<tr>{{ range . }}<td>{{ .value_html }}</td>{{ end }}</tr>{{ end }}</tbody>
