@@ -8,10 +8,6 @@ format pdf "mitre_ctid" {
     updated_at  = "2026-09-03T00:00:00Z"
   }
 
-  # Damask uses this HTML format as the semantic and visual base before Paged.js
-  # applies the print-specific rules below.
-  html_format = "mitre_ctid"
-
   page_size             = "A4 landscape"
   page_margins          = "17mm 16mm 18mm 16mm"
   page_background_color = "#ffffff"

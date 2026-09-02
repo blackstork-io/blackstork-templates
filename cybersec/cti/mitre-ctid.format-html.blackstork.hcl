@@ -258,6 +258,7 @@ format html "mitre_ctid" {
   template_per_type = {
     "document" = <<-HTML
       <article class="ctid-report">
+        {{ .title }}
         <main class="ctid-content">{{ .content }}</main>
         <footer class="ctid-web-footer">
           <span class="ctid-handling">Cyber Threat Intelligence</span>
