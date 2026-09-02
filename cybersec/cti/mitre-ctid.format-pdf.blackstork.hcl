@@ -9,7 +9,7 @@ format pdf "mitre_ctid" {
   }
 
   page_size             = "A4 landscape"
-  page_margins          = "17mm 16mm 18mm 16mm"
+  page_margins          = "22mm 16mm 23mm 16mm"
   page_background_color = "#ffffff"
 
   page_number_in_footer_center = false
@@ -159,12 +159,6 @@ format pdf "mitre_ctid" {
     .ctid-key-points ul { display: grid !important; grid-template-columns: 1fr 1fr !important; padding: 0 !important; }
     .ctid-key-points li { min-height: 0 !important; padding: 7pt 9pt !important; }
     .ctid-probability { padding: 12pt !important; break-inside: avoid !important; page-break-inside: avoid !important; }
-
-//     .ctid-data-section {
-//       break-before: page !important;
-//       page-break-before: always !important;
-//     }
-    .ctid-data-section section:first-child { margin-top: 0 !important; }
 
     .ctid-table-wrap {
       width: 100% !important;
