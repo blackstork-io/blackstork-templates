@@ -9,7 +9,7 @@ format pdf "mitre_ctid" {
   }
 
   page_size             = "A4 landscape"
-  page_margins          = "22mm 16mm 23mm 16mm"
+  page_margins          = "17mm 16mm 18mm 16mm"
   page_background_color = "#ffffff"
 
   page_number_in_footer_center = false
@@ -109,6 +109,8 @@ format pdf "mitre_ctid" {
     .ctid-report {
       width: 100% !important;
       margin: 0 !important;
+      padding-top: 10px;
+      padding-bottom: 10px;
       overflow: visible !important;
       border: 0 !important;
       border-radius: 0 !important;
