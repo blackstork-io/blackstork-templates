@@ -13,8 +13,21 @@ document "mitre_ctid_executive_report" {
     default_value = false
     description   = "Use the configured LLM to synthesize narrative sections."
   }
+  input "primary_object_id" {
+    type          = "string"
+    default_value = "report--10000000-0000-4000-8000-000000000002"
+    description   = "STIX identifier of the report object that defines the intelligence in scope."
+  }
 
   vars {
+    report_metadata = {
+      producer_name  = "Acme Corp"
+      producer_unit  = "Threat Intelligence"
+      product_type   = "Executive Intelligence"
+      handling       = "Internal"
+      tagline        = "Decision-grade intelligence for security leaders and defenders."
+      generated_with = "BlackStork"
+    }
     # Replace this example with a STIX bundle supplied by an input or data source.
     stix_bundle = {
       type = "bundle"
@@ -79,8 +92,14 @@ document "mitre_ctid_executive_report" {
     report = query_jq(<<-JQ
       .vars.stix_bundle.objects as $objects |
       .vars.report_context as $context |
-      ($objects | map(select(.type == "report")) | first) as $source |
-      ($objects | map(select(.type == "threat-actor")) | first) as $actor |
+      .inputs.primary_object_id as $primary_id |
+      ($objects | map(select(.id == $primary_id and .type == "report")) | first) as $source |
+      ($source.object_refs // []) as $scope_refs |
+      ($objects | map(select(.type == "threat-actor" and (.id as $id | $scope_refs | index($id)))) | first) as $actor |
+      def probability_label: {
+        almost_no_chance: "Almost no chance", very_unlikely: "Very unlikely", unlikely: "Unlikely",
+        roughly_even: "Roughly even chance", likely: "Likely", very_likely: "Very likely", almost_certain: "Almost certain"
+      }[.] // "Not assessed";
       {
         title: $source.name,
         audience: $context.audience,
@@ -91,23 +110,27 @@ document "mitre_ctid_executive_report" {
         outlook: $context.outlook,
         actor: $actor,
         probability: $context.probability,
+        probability_label: ($context.probability | probability_label),
         intelligence_gaps: $context.intelligence_gaps,
         intelligence_requirements: $context.intelligence_requirements,
         feedback_contact: $context.feedback_contact,
-        attack: [$objects[] | select(.type == "attack-pattern") | {
-          attribution: $actor.name, tactic: .kill_chain_phases[0].phase_name,
-          technique: (.external_references[0].external_id // "N/A"), subtechnique: "N/A",
+        attack: [$objects[] | select(.type == "attack-pattern" and (.id as $id | $scope_refs | index($id))) | {
+          attribution: ($actor.name // "Not available"),
+          tactic: (([.kill_chain_phases[]? | select(.kill_chain_name == "mitre-attack").phase_name] | first) // "Unknown"),
+          technique: (([.external_references[]? | select(.source_name == "mitre-attack").external_id] | first) // "N/A"),
+          subtechnique: (([.external_references[]? | select(.source_name == "mitre-attack").external_id] | first) as $id | if ($id // "" | contains(".")) then .name else "N/A" end),
           procedure: .description, d3fend: "N/A", control: "Not provided"
         }],
         timeline: [], malware: [], network_indicators: [], host_indicators: [], cves: [], signatures: [],
-        sources: [$source.external_references[] | { name: .source_name, url: .url, description: "External STIX reference" }],
-        metadata: [{ field: "Threat Actor", value: $actor.name }]
+        sources: [($source.external_references // [])[] | select(.url != null) | { name: .source_name, url: .url, description: "Source reference" }],
+        metadata: (if $actor == null then [] else [{ field: "Threat Actor", value: $actor.name }] end)
       }
     JQ
     )
   }
 
   title = "{{ .vars.report.title }}"
+  content ref { base = content.table.ctid_report_identity }
   section ref { base = section.ctid_executive_summary }
   section ref { base = section.ctid_key_points }
 
@@ -125,9 +148,9 @@ document "mitre_ctid_executive_report" {
     }
     content llm_text {
       is_included = query_jq(".inputs.use_llm")
-      config      = config.content.llm_text.ctid_analyst
       prompt      = <<-EOT
-        Assess the trend for executives. Contrast the historical baseline with
+        You are a senior cyber threat intelligence analyst. Assess the trend
+        for executives. Contrast the historical baseline with
         the new information, explain organizational relevance, and identify the
         variables that could materially change the outlook. Use only:
         {{ .vars.report | toPrettyJson }}
@@ -143,9 +166,9 @@ document "mitre_ctid_executive_report" {
     }
     content llm_text {
       is_included = query_jq(".inputs.use_llm")
-      config      = config.content.llm_text.ctid_analyst
       prompt      = <<-EOT
-        Write a short outlook focused on business impact and points of leverage
+        You are a senior cyber threat intelligence analyst. Write a short outlook
+        focused on business impact and points of leverage
         within leadership's control. Use only this STIX-derived context:
         {{ .vars.report | toPrettyJson }}
       EOT
@@ -155,6 +178,8 @@ document "mitre_ctid_executive_report" {
   section ref { base = section.ctid_key_intelligence_gaps }
   section ref { base = section.ctid_probability_matrix }
   section ref { base = section.ctid_intel_requirements }
+  section ref { base = section.ctid_feedback }
   section ref { base = section.ctid_data_sources }
   format md "report" {}
+  format ref { base = format.html.ctid_mitre }
 }

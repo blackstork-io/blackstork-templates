@@ -13,8 +13,21 @@ document "mitre_ctid_threat_actor_profile_report" {
     default_value = false
     description   = "Use the configured LLM to synthesize narrative sections."
   }
+  input "primary_object_id" {
+    type          = "string"
+    default_value = "threat-actor--20000000-0000-4000-8000-000000000002"
+    description   = "STIX identifier of the threat actor described by the report."
+  }
 
   vars {
+    report_metadata = {
+      producer_name  = "Acme Corp"
+      producer_unit  = "Threat Intelligence"
+      product_type   = "Threat Actor Profile"
+      handling       = "Internal"
+      tagline        = "Decision-grade intelligence for security leaders and defenders."
+      generated_with = "BlackStork"
+    }
     stix_bundle = {
       type = "bundle"
       id   = "bundle--20000000-0000-4000-8000-000000000001"
@@ -139,6 +152,27 @@ document "mitre_ctid_threat_actor_profile_report" {
           first_observed  = "2026-04-12T00:00:00Z", last_observed = "2026-08-10T00:00:00Z"
           number_observed = 7
           object_refs     = ["ipv4-addr--20000000-0000-5000-8000-000000000007"]
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000016"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "uses", source_ref = "threat-actor--20000000-0000-4000-8000-000000000002"
+          target_ref        = "attack-pattern--20000000-0000-4000-8000-000000000003"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000017"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "indicates", source_ref = "indicator--20000000-0000-4000-8000-000000000006"
+          target_ref        = "infrastructure--20000000-0000-4000-8000-000000000004"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000018"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "located-at", source_ref = "identity--20000000-0000-4000-8000-000000000005"
+          target_ref        = "location--20000000-0000-4000-8000-000000000008"
         }
       ]
     }
@@ -157,15 +191,22 @@ document "mitre_ctid_threat_actor_profile_report" {
     report = query_jq(<<-JQ
       .vars.stix_bundle.objects as $objects |
       .vars.report_context as $context |
-      ($objects | map(select(.type == "threat-actor")) | first) as $actor |
+      .inputs.primary_object_id as $primary_id |
+      ($objects | map(select(.id == $primary_id and .type == "threat-actor")) | first) as $actor |
       ([$objects[] | select(.type == "relationship" and .source_ref == $actor.id and .relationship_type == "targets") | .target_ref]) as $target_refs |
       ([$objects[] | select(.type == "location" and (.id as $id | $target_refs | index($id)))]) as $locations |
       ([$objects[] | select(.type == "identity" and (.id as $id | $target_refs | index($id)))]) as $victims |
       ([$objects[] | select(.type == "relationship" and .source_ref == $actor.id and .relationship_type == "uses") | .target_ref]) as $infrastructure_refs |
       ([$objects[] | select(.type == "infrastructure" and (.id as $id | $infrastructure_refs | index($id)))]) as $infrastructure |
+      ([$objects[] | select(.type == "relationship" and .relationship_type == "indicates") | select(.target_ref as $id | $infrastructure_refs | index($id)) | .source_ref]) as $indicator_refs |
+      def probability_label: {
+        almost_no_chance: "Almost no chance", very_unlikely: "Very unlikely", unlikely: "Unlikely",
+        roughly_even: "Roughly even chance", likely: "Likely", very_likely: "Very likely", almost_certain: "Almost certain"
+      }[.] // "Not assessed";
       {
         title: ($actor.name + " Threat Actor Profile"), audience: $context.audience,
         subject: $actor.description, actor: $actor, probability: $context.probability,
+        probability_label: ($context.probability | probability_label),
         attribution_assessment: $context.attribution_assessment,
         locations: ($locations | map(.name)),
         sectors: ($victims | map(.sectors[]) | unique),
@@ -173,20 +214,23 @@ document "mitre_ctid_threat_actor_profile_report" {
         intelligence_gaps: $context.intelligence_gaps,
         intelligence_requirements: $context.intelligence_requirements,
         feedback_contact: $context.feedback_contact,
-        attack: [$objects[] | select(.type == "attack-pattern") | {
-          attribution: $actor.name, tactic: .kill_chain_phases[0].phase_name,
-          technique: .external_references[0].external_id, subtechnique: "N/A", procedure: .description,
+        attack: [$objects[] | select(.type == "attack-pattern" and (.id as $id | $infrastructure_refs | index($id))) | {
+          attribution: $actor.name,
+          tactic: (([.kill_chain_phases[]? | select(.kill_chain_name == "mitre-attack").phase_name] | first) // "Unknown"),
+          technique: (([.external_references[]? | select(.source_name == "mitre-attack").external_id] | first) // "N/A"),
+          subtechnique: (([.external_references[]? | select(.source_name == "mitre-attack").external_id] | first) as $id | if ($id // "" | contains(".")) then .name else "N/A" end),
+          procedure: .description,
           d3fend: "N/A", control: ($context.attack[.id].control // "Not provided")
         }],
         timeline: [{ attribution: $actor.name, start: $actor.first_seen, end: $actor.last_seen,
           location: ($locations | map(.name) | join(", ")),
           sector: ($victims | map(.sectors[]) | unique | join(", ")), activity: $actor.description }],
-        victims: [$victims[] | {
+        victims: [$victims[] | . as $victim | ([$objects[] | select(.type == "relationship" and .source_ref == $victim.id and .relationship_type == "located-at") | .target_ref]) as $victim_location_refs | {
           name: .name, date: ($context.victims[.id].date_reported // "Unknown"), sector: (.sectors | join(", ")),
-          locality: "N/A", country: ($locations | map(.name) | join(", "))
+          locality: "N/A", country: ([$objects[] | select(.type == "location" and (.id as $id | $victim_location_refs | index($id))) | .name] | join(", ") // "Not available")
         }],
         malware: [],
-        network_indicators: [$objects[] | select(.type == "indicator") | {
+        network_indicators: [$objects[] | select(.type == "indicator" and (.id as $id | $indicator_refs | index($id))) | {
           attribution: $actor.name,
           value: (.id as $indicator_id |
             ($objects[] | select(.type == "relationship" and .source_ref == $indicator_id and .relationship_type == "based-on").target_ref) as $observed_id |
@@ -211,6 +255,7 @@ document "mitre_ctid_threat_actor_profile_report" {
   }
 
   title = "{{ .vars.report.title }}"
+  content ref { base = content.table.ctid_report_identity }
   section ref { base = section.ctid_executive_summary }
   section ref { base = section.ctid_key_points }
   section ref { base = section.ctid_assessment }
@@ -227,8 +272,7 @@ document "mitre_ctid_threat_actor_profile_report" {
       }
       content llm_text {
         is_included = query_jq(".inputs.use_llm")
-        config      = config.content.llm_text.ctid_analyst
-        prompt      = "Describe how the actor operates using only these STIX-derived ATT&CK rows: {{ .vars.report.attack | toPrettyJson }}"
+        prompt      = "You are a senior cyber threat intelligence analyst. Describe how the actor operates using only these ATT&CK rows: {{ .vars.report.attack | toPrettyJson }}"
       }
     }
     section "infrastructure" {
@@ -256,12 +300,17 @@ document "mitre_ctid_threat_actor_profile_report" {
   section "victims" {
     title = "Victims"
     content table {
+      is_included = query_jq("(.vars.report.victims // []) | length > 0")
       rows = query_jq(".vars.report.victims")
       columns = [
         { header = "Name", value = "{{ .row.value.name }}" }, { header = "Date Reported", value = "{{ .row.value.date }}" },
         { header = "Sector", value = "{{ .row.value.sector }}" }, { header = "City/State/Province", value = "{{ .row.value.locality }}" },
         { header = "Country/Region", value = "{{ .row.value.country }}" }
       ]
+    }
+    content text {
+      is_included = query_jq("(.vars.report.victims // []) | length == 0")
+      value       = "No confirmed victims were available for this report."
     }
   }
 
@@ -275,6 +324,11 @@ document "mitre_ctid_threat_actor_profile_report" {
   section "metadata" {
     title = "Report Metadata"
     content ref { base = content.table.ctid_metadata }
+    content text {
+      is_included = query_jq("(.vars.report.metadata // []) | length == 0")
+      value       = "No additional report metadata was provided."
+    }
   }
   format md "report" {}
+  format ref { base = format.html.ctid_mitre }
 }

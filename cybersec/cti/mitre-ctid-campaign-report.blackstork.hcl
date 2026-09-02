@@ -13,8 +13,21 @@ document "mitre_ctid_campaign_report" {
     default_value = false
     description   = "Use the configured LLM to synthesize narrative sections."
   }
+  input "primary_object_id" {
+    type          = "string"
+    default_value = "campaign--00000000-0000-4000-8000-000000000003"
+    description   = "STIX identifier of the campaign covered by the report."
+  }
 
   vars {
+    report_metadata = {
+      producer_name   = "Acme Corp"
+      producer_unit   = "Threat Intelligence"
+      product_type    = "Finished Intelligence"
+      handling        = "Internal"
+      tagline         = "Decision-grade intelligence for security leaders and defenders."
+      generated_with  = "BlackStork"
+    }
     # Replace this example bundle with a STIX 2.1 bundle from a data source or input.
     stix_bundle = {
       type = "bundle"
@@ -179,6 +192,34 @@ document "mitre_ctid_campaign_report" {
           first_observed  = "2026-07-02T00:00:00Z", last_observed = "2026-08-18T00:00:00Z"
           number_observed = 12
           object_refs     = ["domain-name--00000000-0000-5000-8000-000000000013"]
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--00000000-0000-4000-8000-000000000019"
+          created           = "2026-08-20T08:00:00Z", modified = "2026-08-20T08:00:00Z"
+          relationship_type = "uses", source_ref = "campaign--00000000-0000-4000-8000-000000000003"
+          target_ref        = "attack-pattern--00000000-0000-4000-8000-000000000004"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--00000000-0000-4000-8000-000000000020"
+          created           = "2026-08-20T08:00:00Z", modified = "2026-08-20T08:00:00Z"
+          relationship_type = "uses", source_ref = "campaign--00000000-0000-4000-8000-000000000003"
+          target_ref        = "malware--00000000-0000-4000-8000-000000000005"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--00000000-0000-4000-8000-000000000021"
+          created           = "2026-08-20T08:00:00Z", modified = "2026-08-20T08:00:00Z"
+          relationship_type = "exploits", source_ref = "attack-pattern--00000000-0000-4000-8000-000000000004"
+          target_ref        = "vulnerability--00000000-0000-4000-8000-000000000007"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--00000000-0000-4000-8000-000000000022"
+          created           = "2026-08-20T08:00:00Z", modified = "2026-08-20T08:00:00Z"
+          relationship_type = "indicates", source_ref = "indicator--00000000-0000-4000-8000-000000000006"
+          target_ref        = "campaign--00000000-0000-4000-8000-000000000003"
         }
       ]
     }
@@ -204,11 +245,20 @@ document "mitre_ctid_campaign_report" {
     report = query_jq(<<-JQ
       .vars.stix_bundle.objects as $objects |
       .vars.report_context as $context |
-      ($objects | map(select(.type == "campaign")) | first) as $campaign |
-      ($objects | map(select(.type == "threat-actor")) | first) as $actor |
+      .inputs.primary_object_id as $primary_id |
+      ($objects | map(select(.id == $primary_id and .type == "campaign")) | first) as $campaign |
+      ($objects | map(select(.type == "relationship" and .source_ref == $primary_id and .relationship_type == "attributed-to")) | first | .target_ref) as $actor_ref |
+      ($objects | map(select(.id == $actor_ref and .type == "threat-actor")) | first) as $actor |
       ([$objects[] | select(.type == "relationship" and .source_ref == $campaign.id and .relationship_type == "targets") | .target_ref]) as $target_refs |
+      ([$objects[] | select(.type == "relationship" and .source_ref == $campaign.id and .relationship_type == "uses") | .target_ref]) as $used_refs |
+      ([$objects[] | select(.type == "relationship" and .target_ref == $campaign.id and .relationship_type == "indicates") | .source_ref]) as $indicator_refs |
+      ([$objects[] | select(.type == "relationship" and (.source_ref as $id | $used_refs | index($id)) and .relationship_type == "exploits") | .target_ref]) as $vulnerability_refs |
       ([$objects[] | select(.type == "location" and (.id as $id | $target_refs | index($id)))]) as $locations |
       ([$objects[] | select(.type == "identity" and (.id as $id | $target_refs | index($id)))]) as $victims |
+      def probability_label: {
+        almost_no_chance: "Almost no chance", very_unlikely: "Very unlikely", unlikely: "Unlikely",
+        roughly_even: "Roughly even chance", likely: "Likely", very_likely: "Very likely", almost_certain: "Almost certain"
+      }[.] // "Not assessed";
       {
         title: $campaign.name,
         audience: $context.audience,
@@ -216,10 +266,11 @@ document "mitre_ctid_campaign_report" {
         actor: $actor,
         campaign: $campaign,
         probability: $context.probability,
+        probability_label: ($context.probability | probability_label),
         intelligence_gaps: $context.intelligence_gaps,
         intelligence_requirements: $context.intelligence_requirements,
         feedback_contact: $context.feedback_contact,
-        attack: [$objects[] | select(.type == "attack-pattern") | {
+        attack: [$objects[] | select(.type == "attack-pattern" and (.id as $id | $used_refs | index($id))) | {
           attribution: $actor.name,
           tactic: (.kill_chain_phases[0].phase_name // "Unknown"),
           technique: ((.external_references[]? | select(.source_name == "mitre-attack").external_id) // "N/A"),
@@ -229,14 +280,14 @@ document "mitre_ctid_campaign_report" {
         timeline: [{ attribution: $actor.name, start: $campaign.first_seen, end: $campaign.last_seen,
           location: ($locations | map(.name) | join(", ")), sector: ($victims | map(.sectors[]) | unique | join(", ")),
           activity: $campaign.description }],
-        malware: [$objects[] | select(.type == "malware") | {
+        malware: [$objects[] | select(.type == "malware" and (.id as $id | $used_refs | index($id))) | {
           attribution: $actor.name, name: .name,
           hash_type: ((.sample_refs[0] as $sample | $objects[] | select(.id == $sample).hashes | keys[0]) // "N/A"),
           hash: ((.sample_refs[0] as $sample | $objects[] | select(.id == $sample).hashes | to_entries[0].value) // "N/A"),
           associated_hashes: "N/A", description: .description,
           report_url: "N/A", first_seen: (.first_seen // "Unknown"), last_seen: (.last_seen // "Unknown")
         }],
-        network_indicators: [$objects[] | select(.type == "indicator") | {
+        network_indicators: [$objects[] | select(.type == "indicator" and (.id as $id | $indicator_refs | index($id))) | {
           attribution: $actor.name,
           value: (.id as $indicator_id |
             ($objects[] | select(.type == "relationship" and .source_ref == $indicator_id and .relationship_type == "based-on").target_ref) as $observed_id |
@@ -247,13 +298,13 @@ document "mitre_ctid_campaign_report" {
           first_seen: .valid_from, last_seen: (.valid_until // "Active")
         }],
         host_indicators: [],
-        cves: [$objects[] | select(.type == "vulnerability") | {
+        cves: [$objects[] | select(.type == "vulnerability" and (.id as $id | $vulnerability_refs | index($id))) | {
           attribution: $actor.name, name: .name, cvss: ($context.vulnerabilities[.id].cvss // "Unknown"),
           patch_available: ($context.vulnerabilities[.id].patch_available // "UNK"), remediation: ($context.vulnerabilities[.id].remediation // "N/A"),
           published: ($context.vulnerabilities[.id].published // "Unknown"), patch_applied: ($context.vulnerabilities[.id].patch_applied // "UNK")
         }],
         signatures: [],
-        sources: [$objects[] | .external_references[]? | select(.url != null) | {
+        sources: [$objects[] | select(.id == $campaign.id or .id == $actor.id or (.id as $id | ($used_refs + $indicator_refs + $vulnerability_refs) | index($id))) | .external_references[]? | select(.url != null) | {
           name: .source_name, url: .url, description: "External STIX reference"
         }] | unique_by(.url),
         metadata: [
@@ -269,6 +320,7 @@ document "mitre_ctid_campaign_report" {
   }
 
   title = "{{ .vars.report.title }}"
+  content ref { base = content.table.ctid_report_identity }
 
   section ref { base = section.ctid_executive_summary }
   section ref { base = section.ctid_key_points }
@@ -281,7 +333,7 @@ document "mitre_ctid_campaign_report" {
   section ref { base = section.ctid_signatures }
 
   content text {
-    value = "_Attach Attack Flow and/or Navigator heat maps when available._"
+    value = "No ATT&CK visualization was provided with this report."
   }
 
   section ref { base = section.ctid_probability_matrix }
@@ -292,7 +344,12 @@ document "mitre_ctid_campaign_report" {
   section "metadata" {
     title = "Report Metadata"
     content ref { base = content.table.ctid_metadata }
+    content text {
+      is_included = query_jq("(.vars.report.metadata // []) | length == 0")
+      value       = "No additional report metadata was provided."
+    }
   }
 
   format md "report" {}
+  format ref { base = format.html.ctid_mitre }
 }

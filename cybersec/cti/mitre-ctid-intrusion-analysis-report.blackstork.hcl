@@ -13,8 +13,21 @@ document "mitre_ctid_intrusion_analysis_report" {
     default_value = false
     description   = "Use the configured LLM to synthesize narrative sections."
   }
+  input "primary_object_id" {
+    type          = "string"
+    default_value = "observed-data--30000000-0000-4000-8000-000000000002"
+    description   = "STIX identifier of the observed-data object anchoring the analysis."
+  }
 
   vars {
+    report_metadata = {
+      producer_name  = "Acme Corp"
+      producer_unit  = "Threat Intelligence"
+      product_type   = "Intrusion Analysis"
+      handling       = "Internal"
+      tagline        = "Decision-grade intelligence for security leaders and defenders."
+      generated_with = "BlackStork"
+    }
     stix_bundle = {
       type = "bundle"
       id   = "bundle--30000000-0000-4000-8000-000000000001"
@@ -91,6 +104,34 @@ document "mitre_ctid_intrusion_analysis_report" {
           created           = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
           relationship_type = "based-on", source_ref = "indicator--30000000-0000-4000-8000-000000000007"
           target_ref        = "observed-data--30000000-0000-4000-8000-000000000002"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--30000000-0000-4000-8000-000000000010"
+          created           = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          relationship_type = "based-on", source_ref = "indicator--30000000-0000-4000-8000-000000000008"
+          target_ref        = "observed-data--30000000-0000-4000-8000-000000000002"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--30000000-0000-4000-8000-000000000011"
+          created           = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          relationship_type = "related-to", source_ref = "observed-data--30000000-0000-4000-8000-000000000002"
+          target_ref        = "attack-pattern--30000000-0000-4000-8000-000000000005"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--30000000-0000-4000-8000-000000000012"
+          created           = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          relationship_type = "indicates", source_ref = "indicator--30000000-0000-4000-8000-000000000007"
+          target_ref        = "threat-actor--30000000-0000-4000-8000-000000000004"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--30000000-0000-4000-8000-000000000013"
+          created           = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          relationship_type = "uses", source_ref = "threat-actor--30000000-0000-4000-8000-000000000004"
+          target_ref        = "attack-pattern--30000000-0000-4000-8000-000000000006"
         }
       ]
     }
@@ -116,27 +157,38 @@ document "mitre_ctid_intrusion_analysis_report" {
     report = query_jq(<<-JQ
       .vars.stix_bundle.objects as $objects |
       .vars.report_context as $context |
-      ($objects | map(select(.type == "observed-data")) | first) as $observation |
-      ($objects | map(select(.type == "threat-actor")) | first) as $actor |
+      .inputs.primary_object_id as $primary_id |
+      ($objects | map(select(.id == $primary_id and .type == "observed-data")) | first) as $observation |
+      ([$objects[] | select(.type == "relationship" and .target_ref == $primary_id and .relationship_type == "based-on") | .source_ref]) as $indicator_refs |
+      ([$objects[] | select(.type == "relationship" and .source_ref == $primary_id and .relationship_type == "related-to") | .target_ref]) as $observed_attack_refs |
+      ([$objects[] | select(.type == "relationship" and (.source_ref as $id | $indicator_refs | index($id)) and .relationship_type == "indicates") | .target_ref] | first) as $actor_ref |
+      ($objects | map(select(.id == $actor_ref and .type == "threat-actor")) | first) as $actor |
+      ([$objects[] | select(.type == "relationship" and .source_ref == $actor_ref and .relationship_type == "uses") | .target_ref]) as $actor_uses_refs |
+      def probability_label: {
+        almost_no_chance: "Almost no chance", very_unlikely: "Very unlikely", unlikely: "Unlikely",
+        roughly_even: "Roughly even chance", likely: "Likely", very_likely: "Very likely", almost_certain: "Almost certain"
+      }[.] // "Not assessed";
       def attack_row: {
-        attribution: $actor.name, tactic: .kill_chain_phases[0].phase_name,
-        technique: .external_references[0].external_id,
-        subtechnique: (if (.external_references[0].external_id | contains(".")) then .name else "N/A" end),
+        attribution: ($actor.name // "Not available"),
+        tactic: (([.kill_chain_phases[]? | select(.kill_chain_name == "mitre-attack").phase_name] | first) // "Unknown"),
+        technique: (([.external_references[]? | select(.source_name == "mitre-attack").external_id] | first) // "N/A"),
+        subtechnique: (([.external_references[]? | select(.source_name == "mitre-attack").external_id] | first) as $id | if ($id // "" | contains(".")) then .name else "N/A" end),
         procedure: .description, d3fend: ($context.attack[.id].d3fend // "N/A"), control: "Not provided"
       };
       {
         title: "Intrusion Analysis: Suspicious PowerShell and C2 Activity",
         audience: $context.audience, subject: $context.summary,
         observation: $observation, actor: $actor, probability: $context.probability,
+        probability_label: ($context.probability | probability_label),
         intelligence_gaps: $context.intelligence_gaps,
         intelligence_requirements: $context.intelligence_requirements,
         feedback_contact: $context.feedback_contact,
-        attack: [$objects[] | select(.type == "attack-pattern" and $context.attack[.id].observed == false) | attack_row],
-        observed_attack: [$objects[] | select(.type == "attack-pattern" and $context.attack[.id].observed == true) | attack_row],
+        attack: [$objects[] | select(.type == "attack-pattern" and (.id as $id | $actor_uses_refs | index($id))) | attack_row],
+        observed_attack: [$objects[] | select(.type == "attack-pattern" and (.id as $id | $observed_attack_refs | index($id))) | attack_row],
         timeline: [{ attribution: $actor.name, start: $observation.first_observed, end: $observation.last_observed,
           location: $context.timeline.location, sector: $context.timeline.sector, activity: $context.summary }],
         malware: [],
-        network_indicators: [$objects[] | select(.type == "indicator" and $context.indicators[.id].kind == "network") | {
+        network_indicators: [$objects[] | select(.type == "indicator" and (.id as $id | $indicator_refs | index($id)) and ($context.indicators[.id].kind // "") == "network") | {
           attribution: $actor.name,
           value: (.id as $indicator_id |
             ($objects[] | select(.type == "relationship" and .source_ref == $indicator_id and .relationship_type == "based-on").target_ref) as $observed_id |
@@ -147,15 +199,16 @@ document "mitre_ctid_intrusion_analysis_report" {
           first_seen: .valid_from, last_seen: (.valid_until // "Active")
         }],
         host_indicators: [], cves: [],
-        signatures: [$objects[] | select(.type == "indicator" and $context.indicators[.id].kind == "signature") | { name: .name, pattern: .pattern }],
+        signatures: [$objects[] | select(.type == "indicator" and (.id as $id | $indicator_refs | index($id)) and ($context.indicators[.id].kind // "") == "signature") | { name: .name, pattern: .pattern }],
         sources: [{ name: "Incident telemetry", url: "https://example.org/incidents/IR-2026-081", description: "Sanitized SOC and IR observations" }],
-        metadata: [{ field: "Threat Actor", value: $actor.name }, { field: "Actor Motivation", value: "Unknown" }]
+        metadata: (if $actor == null then [] else [{ field: "Threat Actor", value: $actor.name }, { field: "Actor Motivation", value: ($actor.primary_motivation // "Unknown") }] end)
       }
     JQ
     )
   }
 
   title = "{{ .vars.report.title }}"
+  content ref { base = content.table.ctid_report_identity }
   section ref { base = section.ctid_executive_summary }
   section ref { base = section.ctid_key_points }
 
@@ -165,15 +218,15 @@ document "mitre_ctid_intrusion_analysis_report" {
       is_included = query_jq(".inputs.use_llm | not")
       value       = <<-EOT
         {{ .vars.report.subject }} Attribution remains
-        {{ .vars.report.probability }}; hunt first for the expected behaviors in
+        {{ .vars.report.probability_label }}; hunt first for the expected behaviors in
         the following ATT&CK table and for the listed network indicators.
       EOT
     }
     content llm_text {
       is_included = query_jq(".inputs.use_llm")
-      config      = config.content.llm_text.ctid_analyst
       prompt      = <<-EOT
-        Assess what activity likely preceded and may follow the observation.
+        You are a senior cyber threat intelligence analyst. Assess what activity
+        likely preceded and may follow the observation.
         Separate observed from expected behavior, explain attribution confidence,
         and give prioritized hunt recommendations. Use only:
         {{ .vars.report | toPrettyJson }}
@@ -189,6 +242,7 @@ document "mitre_ctid_intrusion_analysis_report" {
   section "ttps_observed" {
     title = "MITRE ATT&CK: TTPs Observed in the Intrusion"
     content table {
+      is_included = query_jq("(.vars.report.observed_attack // []) | length > 0")
       rows = query_jq(".vars.report.observed_attack")
       columns = [
         { header = "Tactics", value = "{{ .row.value.tactic }}" }, { header = "Techniques", value = "{{ .row.value.technique }}" },
@@ -196,14 +250,48 @@ document "mitre_ctid_intrusion_analysis_report" {
         { header = "D3FEND", value = "{{ .row.value.d3fend }}" }
       ]
     }
+    content text {
+      is_included = query_jq("(.vars.report.observed_attack // []) | length == 0")
+      value       = "No ATT&CK techniques were directly observed in the intrusion data available for analysis."
+    }
   }
 
   section "iocs_for_hunting" {
     title = "Indicators of Compromise for Hunting"
-    section ref { base = section.ctid_iocs }
+    content text {
+      is_included = query_jq("((.vars.report.malware // []) + (.vars.report.network_indicators // []) + (.vars.report.host_indicators // [])) | length == 0")
+      value       = "No indicators of compromise were available for hunting."
+    }
+    section "malware" {
+      title       = "Malware"
+      is_included = query_jq("(.vars.report.malware // []) | length > 0")
+      content table {
+        rows = query_jq(".vars.report.malware")
+        columns = [
+          { header = "Name", value = "{{ .row.value.name }}" },
+          { header = "Description", value = "{{ .row.value.description }}" },
+          { header = "First Reported", value = "{{ .row.value.first_seen }}" },
+          { header = "Last Reported", value = "{{ .row.value.last_seen }}" }
+        ]
+      }
+    }
+    section "network" {
+      title       = "Network"
+      is_included = query_jq("(.vars.report.network_indicators // []) | length > 0")
+      content table {
+        rows = query_jq(".vars.report.network_indicators")
+        columns = [
+          { header = "Artifact", value = "{{ .row.value.value }}" },
+          { header = "Details", value = "{{ .row.value.description }}" },
+          { header = "Intrusion Phase", value = "{{ .row.value.phase }}" },
+          { header = "First Reported", value = "{{ .row.value.first_seen }}" },
+          { header = "Last Reported", value = "{{ .row.value.last_seen }}" }
+        ]
+      }
+    }
   }
   section ref { base = section.ctid_signatures }
-  content text { value = "_Attach an Attack Flow and/or Navigator heat map when available._" }
+  content text { value = "No ATT&CK visualization was provided with this report." }
   section ref { base = section.ctid_probability_matrix }
   section ref { base = section.ctid_intel_requirements }
   section ref { base = section.ctid_feedback }
@@ -211,6 +299,11 @@ document "mitre_ctid_intrusion_analysis_report" {
   section "metadata" {
     title = "Report Metadata"
     content ref { base = content.table.ctid_metadata }
+    content text {
+      is_included = query_jq("(.vars.report.metadata // []) | length == 0")
+      value       = "No additional report metadata was provided."
+    }
   }
   format md "report" {}
+  format ref { base = format.html.ctid_mitre }
 }
