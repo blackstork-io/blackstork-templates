@@ -1,171 +1,216 @@
 document "mitre_ctid_intrusion_analysis_report" {
-
   meta {
-    name = "MITRE CTID Intrusion Analysis Report Template"
-
-    description = <<-EOT
-      Author: CTI Team 
-      Audience: SOC, IR, Hunt 
-      Key Decisions: Look for additional adversary behavior beyond the initial alert; Stop the adversary from reaching their goals and contain the threats.  
-      Decision-Enabling Data Points: intelligence assessment of potential intrusion scenarios; Set of techniques used in past adversary behavior.
-    EOT
-
-    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
-
-    license = "Apache License 2.0"
-    tags = ["mitre", "campaign"]
-
-    updated_at = "2024-01-22T10:00:01+01:00"
+    name        = "MITRE CTID Intrusion Analysis Report Template"
+    description = "A dynamic intrusion-analysis Blueprint rendered from STIX 2.1 observations."
+    url         = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license     = "Apache License 2.0"
+    tags        = ["mitre", "ctid", "intrusion-analysis", "stix2"]
+    updated_at  = "2026-09-01T00:00:00Z"
   }
 
-  title = "Report Title*"
+  input "use_llm" {
+    type          = "bool"
+    default_value = false
+    description   = "Use the configured LLM to synthesize narrative sections."
+  }
 
-  section "summary" {
-    title = "Executive Summary*"
-
-    content text {
-      value = <<-EOT
-        This should be a brief narrative explaining the significance of the report to senior leadership. This should focus on the decision the CTI summary is supporting and the change in circumstances that makes this timely and actionable.
-
-        This should focus on:
-
-        * Bottom Line Up Front (BLUF): The single largest takeaway from the CTI analysis.
-        * What is the new information?
-        * Why it is important for the audience to understand this now?
-
-        This section should not summarize the underlying reports used to create the analysis.
-
-        This should be able to convey the most important analysis to the reader, so that they can skip the rest of the report and still be able to take an informed action.
-
-        The Executive Summary should not be longer than 2 -3 paragraphs, according to best practices. For this report, we recommend trying to keep it to a paragraph
-      EOT
+  vars {
+    stix_bundle = {
+      type = "bundle"
+      id   = "bundle--30000000-0000-4000-8000-000000000001"
+      objects = [
+        {
+          type                = "identity", spec_version = "2.1"
+          id                  = "identity--30000000-0000-4000-8000-000000000001"
+          created             = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          name                = "Example Incident Response Team", identity_class = "organization"
+          contact_information = "ir@example.org"
+        },
+        {
+          type            = "observed-data", spec_version = "2.1"
+          id              = "observed-data--30000000-0000-4000-8000-000000000002"
+          created         = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          first_observed  = "2026-08-29T03:14:00Z", last_observed = "2026-08-29T03:26:00Z"
+          number_observed = 14
+          object_refs     = ["ipv4-addr--30000000-0000-5000-8000-000000000003"]
+        },
+        {
+          type  = "ipv4-addr", spec_version = "2.1"
+          id    = "ipv4-addr--30000000-0000-5000-8000-000000000003"
+          value = "192.0.2.80"
+        },
+        {
+          type               = "threat-actor", spec_version = "2.1"
+          id                 = "threat-actor--30000000-0000-4000-8000-000000000004"
+          created            = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          name               = "Unconfirmed SABLE JACKAL activity"
+          description        = "Observed tradecraft overlaps with SABLE JACKAL, but available evidence is insufficient for firm attribution."
+          threat_actor_types = ["unknown"]
+        },
+        {
+          type                = "attack-pattern", spec_version = "2.1"
+          id                  = "attack-pattern--30000000-0000-4000-8000-000000000005"
+          created             = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          name                = "PowerShell", description = "Encoded PowerShell launched from a spreadsheet process."
+          kill_chain_phases   = [{ kill_chain_name = "mitre-attack", phase_name = "execution" }]
+          external_references = [{ source_name = "mitre-attack", external_id = "T1059.001", url = "https://attack.mitre.org/techniques/T1059/001/" }]
+        },
+        {
+          type                = "attack-pattern", spec_version = "2.1"
+          id                  = "attack-pattern--30000000-0000-4000-8000-000000000006"
+          created             = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          name                = "OS Credential Dumping", description = "Credential access commonly follows this cluster's initial execution. Hunt for access to LSASS and registry credential stores."
+          kill_chain_phases   = [{ kill_chain_name = "mitre-attack", phase_name = "credential-access" }]
+          external_references = [{ source_name = "mitre-attack", external_id = "T1003", url = "https://attack.mitre.org/techniques/T1003/" }]
+        },
+        {
+          type            = "indicator", spec_version = "2.1"
+          id              = "indicator--30000000-0000-4000-8000-000000000007"
+          created         = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          name            = "Suspected C2 address", description = "Address contacted by the affected endpoint."
+          indicator_types = ["malicious-activity"], pattern_type = "stix"
+          pattern         = "[ipv4-addr:value = '192.0.2.80']", valid_from = "2026-08-29T03:14:00Z"
+          kill_chain_phases = [
+            { kill_chain_name = "mitre-attack", phase_name = "command-and-control" }
+          ]
+        },
+        {
+          type            = "indicator", spec_version = "2.1"
+          id              = "indicator--30000000-0000-4000-8000-000000000008"
+          created         = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          name            = "Encoded PowerShell detection", description = "Detects the observed encoded command-line structure."
+          indicator_types = ["malicious-activity"], pattern_type = "stix"
+          pattern         = "[process:command_line MATCHES '(?i)powershell.*-enc']", valid_from = "2026-08-29T03:14:00Z"
+          kill_chain_phases = [
+            { kill_chain_name = "mitre-attack", phase_name = "execution" }
+          ]
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--30000000-0000-4000-8000-000000000009"
+          created           = "2026-08-30T07:30:00Z", modified = "2026-08-30T07:30:00Z"
+          relationship_type = "based-on", source_ref = "indicator--30000000-0000-4000-8000-000000000007"
+          target_ref        = "observed-data--30000000-0000-4000-8000-000000000002"
+        }
+      ]
     }
-  }
 
-  section "key_points" {
-    title = "Key Points*"
-
-    content text {
-      value = <<-EOT
-        These bullets should summarize:
-
-        * What data anchors the analysis.
-        * Where the data falls in the intrusion chain.
-        * Threat actors associated with the data.
-        * Malicious activity generally observed before and after the known activity.
-      EOT
+    report_context = {
+      audience                  = "SOC, incident response, and threat hunting teams"
+      summary                   = "Fourteen outbound connections from a finance workstation to a newly observed VPS followed a suspicious PowerShell launch."
+      probability               = "likely"
+      intelligence_gaps         = ["Whether credentials were accessed before containment.", "Whether the same VPS contacted other internal hosts."]
+      intelligence_requirements = ["IR-4: Identify behaviors likely to precede and follow the observed command-and-control activity."]
+      feedback_contact          = "ir@example.org"
+      timeline                  = { location = "Internal network", sector = "Finance" }
+      attack = {
+        "attack-pattern--30000000-0000-4000-8000-000000000005" = { observed = true, d3fend = "D3-SCA" }
+        "attack-pattern--30000000-0000-4000-8000-000000000006" = { observed = false, d3fend = "D3-OSM" }
+      }
+      indicators = {
+        "indicator--30000000-0000-4000-8000-000000000007" = { kind = "network" }
+        "indicator--30000000-0000-4000-8000-000000000008" = { kind = "signature" }
+      }
     }
+
+    report = query_jq(<<-JQ
+      .vars.stix_bundle.objects as $objects |
+      .vars.report_context as $context |
+      ($objects | map(select(.type == "observed-data")) | first) as $observation |
+      ($objects | map(select(.type == "threat-actor")) | first) as $actor |
+      def attack_row: {
+        attribution: $actor.name, tactic: .kill_chain_phases[0].phase_name,
+        technique: .external_references[0].external_id,
+        subtechnique: (if (.external_references[0].external_id | contains(".")) then .name else "N/A" end),
+        procedure: .description, d3fend: ($context.attack[.id].d3fend // "N/A"), control: "Not provided"
+      };
+      {
+        title: "Intrusion Analysis: Suspicious PowerShell and C2 Activity",
+        audience: $context.audience, subject: $context.summary,
+        observation: $observation, actor: $actor, probability: $context.probability,
+        intelligence_gaps: $context.intelligence_gaps,
+        intelligence_requirements: $context.intelligence_requirements,
+        feedback_contact: $context.feedback_contact,
+        attack: [$objects[] | select(.type == "attack-pattern" and $context.attack[.id].observed == false) | attack_row],
+        observed_attack: [$objects[] | select(.type == "attack-pattern" and $context.attack[.id].observed == true) | attack_row],
+        timeline: [{ attribution: $actor.name, start: $observation.first_observed, end: $observation.last_observed,
+          location: $context.timeline.location, sector: $context.timeline.sector, activity: $context.summary }],
+        malware: [],
+        network_indicators: [$objects[] | select(.type == "indicator" and $context.indicators[.id].kind == "network") | {
+          attribution: $actor.name,
+          value: (.id as $indicator_id |
+            ($objects[] | select(.type == "relationship" and .source_ref == $indicator_id and .relationship_type == "based-on").target_ref) as $observed_id |
+            ($objects[] | select(.id == $observed_id).object_refs[0]) as $observable_id |
+            $objects[] | select(.id == $observable_id).value),
+          description: .description,
+          phase: (([.kill_chain_phases[]? | select(.kill_chain_name == "mitre-attack").phase_name] | first) // "unknown" | split("-") | map(if . == "and" then . else ((.[0:1] | ascii_upcase) + .[1:]) end) | join(" ")),
+          first_seen: .valid_from, last_seen: (.valid_until // "Active")
+        }],
+        host_indicators: [], cves: [],
+        signatures: [$objects[] | select(.type == "indicator" and $context.indicators[.id].kind == "signature") | { name: .name, pattern: .pattern }],
+        sources: [{ name: "Incident telemetry", url: "https://example.org/incidents/IR-2026-081", description: "Sanitized SOC and IR observations" }],
+        metadata: [{ field: "Threat Actor", value: $actor.name }, { field: "Actor Motivation", value: "Unknown" }]
+      }
+    JQ
+    )
   }
+
+  title = "{{ .vars.report.title }}"
+  section ref { base = section.ctid_executive_summary }
+  section ref { base = section.ctid_key_points }
 
   section "indicator_analysis" {
     title = "Indicator Analysis"
-
     content text {
-      value = <<-EOT
-      This section should provide:
-
-      * An assessment of what other TTPs are likely to be in a network based on the initial information provided by the SOC or IR team.
-        * Include corresponding detections in the Signature section below, if applicable (i.e., YARA signatures, etc.)
-      * Once possible, provide attribution to a threat actor with a level of confidence.
-        * An Attack Flow for that threat actor should then be included *IF CURRENTLY AVAILABLE*
-          * If not available, a description of end goal TTPs is most important to aid in initial containment steps.
-          * Only take the time to create a full Attack Flow once the IR has moved into eradication and remediation.
-        * If multiple threat actors could be responsible based on observed data, provide the above for each threat actor ordered by confidence in attribution and secondarily by potential harm caused. This should provide key hunt recommendations for the different threat actors that may be responsible to help the IR team find additional malicious activity and increase the intelligence assessment of attribution.
+      is_included = query_jq(".inputs.use_llm | not")
+      value       = <<-EOT
+        {{ .vars.report.subject }} Attribution remains
+        {{ .vars.report.probability }}; hunt first for the expected behaviors in
+        the following ATT&CK table and for the listed network indicators.
+      EOT
+    }
+    content llm_text {
+      is_included = query_jq(".inputs.use_llm")
+      config      = config.content.llm_text.ctid_analyst
+      prompt      = <<-EOT
+        Assess what activity likely preceded and may follow the observation.
+        Separate observed from expected behavior, explain attribution confidence,
+        and give prioritized hunt recommendations. Use only:
+        {{ .vars.report | toPrettyJson }}
       EOT
     }
   }
 
-  section "mitreattack_ttps_in_network" {
-    title = "MITRE ATT&CK Table (based on v12): TTPs Likely to Be in the Network"
-
-    content text {
-      value = <<-EOT
-        This table should show the MITRE tactics and techniques/Sub-techniques not yet observed but likely to be in the network. The procedure column details a particular instance of how a technique/sub-technique has been used. The D3FEND column includes the corresponding MITRE D3FEND countermeasure technique, if available. If using the tool, the tactics and techniques can be automatically generated from an Attack Flow document using the plug-in.
-      EOT
-    }
-
-    content ref {
-      base = content.table.ctid_mitre_attack
-    }
+  section "ttps_likely" {
+    title = "MITRE ATT&CK: TTPs Likely to Be in the Network"
+    content ref { base = content.table.ctid_mitre_attack }
   }
 
-  section "mitreattack_ttps_observed" {
-    title = "MITRE ATT&CK Table (based on v12): TTPs Observed in the Intrusion"
-
-    content text {
-      value = <<-EOT
-        This table should show the MITRE tactics, techniques/sub-techniques, and procedures observed during the intrusion based on data provided by the SOC or IR team. Analysts can include the corresponding MITRE DEFEND countermeasure technique, if available. If using the tool, the tactics and techniques can be automatically generated from an Attack Flow document using the plug-in.
-      EOT
-    }
-
+  section "ttps_observed" {
+    title = "MITRE ATT&CK: TTPs Observed in the Intrusion"
     content table {
+      rows = query_jq(".vars.report.observed_attack")
       columns = [
-        {
-          header = "Tactics"
-          value = ""
-        },
-        {
-          header = "Techniques"
-          value = ""
-        },
-        {
-          header = "Sub Technique"
-          value = ""
-        },
-        {
-          header = "Procedure"
-          value = ""
-        },
-        {
-          header = "D3FEND"
-          value = ""
-        },
+        { header = "Tactics", value = "{{ .row.value.tactic }}" }, { header = "Techniques", value = "{{ .row.value.technique }}" },
+        { header = "Sub-technique", value = "{{ .row.value.subtechnique }}" }, { header = "Procedure", value = "{{ .row.value.procedure }}" },
+        { header = "D3FEND", value = "{{ .row.value.d3fend }}" }
       ]
     }
   }
 
-  section ref {
-    base = section.ctid_iocs
-
+  section "iocs_for_hunting" {
     title = "Indicators of Compromise for Hunting"
+    section ref { base = section.ctid_iocs }
   }
-
-  section ref {
-    base = section.ctid_signatures
-  }
-
-  content text {
-    value = "_Attached Attack Flow and/or Navigator Heat Maps, if applicable_"
-  }
-
-  section ref {
-    base = section.ctid_probability_matrix
-  }
-
-  section ref {
-    base = section.ctid_intel_requirements
-  }
-
-  section ref {
-    base = section.ctid_feedback
-  }
-
-  content ref {
-    base = content.text.ctid_data_sources
-  }
-
+  section ref { base = section.ctid_signatures }
+  content text { value = "_Attach an Attack Flow and/or Navigator heat map when available._" }
+  section ref { base = section.ctid_probability_matrix }
+  section ref { base = section.ctid_intel_requirements }
+  section ref { base = section.ctid_feedback }
+  section ref { base = section.ctid_data_sources }
   section "metadata" {
-
-    content text {
-      value = <<-EOT
-        The metadata table below is for automation purposes and provides discrete fields for tool extraction. If you are not using the tool, we recommend removing the table.
-
-        |   |   |
-        |---|---|
-        | **Threat Actor:** | - Primary Threat Actor Name(s) or Unknown<br/>- Associated Group Names/Aliases or N/A|
-        | **Actor Motivation:** | - Cyber Espionage, Data Theft, Cyber Crime, Ransomware, Destructive Attack, Hacktivism, Other, Unknown|
-      EOT
-    }
+    title = "Report Metadata"
+    content ref { base = content.table.ctid_metadata }
   }
+  format md "report" {}
 }
-

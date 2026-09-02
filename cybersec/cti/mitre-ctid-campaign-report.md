@@ -1,127 +1,102 @@
-# Report Title*
+# Night Freight
 
-## Executive Summary*
+## Executive Summary
 
-This is a brief narrative explaining the significance of the report. This section should focus on the decision the CTI summary is supporting and the change in circumstances that makes this timely and actionable.
+**Bottom line:** Credential theft and ransomware activity affecting logistics providers.
 
-It should focus on:
+This assessment is written for CTI customers and security leadership. The principal
+judgment is assessed as **likely** based on the
+STIX objects and external references supplied with this report.
 
-* The single largest takeaway from the CTI analysis?
-* What is the new information?
-* Why it is important for the audience to understand?
+## Key Points
 
-This section should not summarize the underlying reports used to create the analysis.
-This should be able to convey the most important analysis to the reader, so that they can skip the rest of the report and still be able to take an informed action.
-
-## Key Points*
-
-These bullets should summarize:
-
-* Who is the report about?
-* What did they do?
-* How they did it?
-* Why does it matter to the audience of the CTI analysis?
+- Subject: Credential theft and ransomware activity affecting logistics providers.
+- Attribution: EMBER BEAR
+- Assessed probability: likely
+- Intended audience: CTI customers and security leadership
 
 ## Assessment
 
-This section should contain:
+**Key Judgment:** Credential theft and ransomware activity affecting logistics providers.
 
-* Key Judgement: This activity, threat actor, malware, etc. demonstrates X that has the potential to impact Y.
-* Change Analysis: Threat actor has a new tool that creates capability Y, leverages vuln X, etc.
-* Relation to Your Organization: This threat actor historically targets our sector; we have previous detections of malware associated with this threat actor; the malware leverages vulnerabilities in our software stack, etc.
+**Confidence:** likely.
+
+**Intelligence limitations:** 2 key
+gaps remain and are listed below.
 
 ## Key Intelligence Gaps
 
-Brief bullet summary of additional information the CTI team is seeking to further evaluate risk. Call out explicit gaps in understanding and what will change assessment because you don’t have information yet
+- Whether access brokers supplied the initial credentials.
+- Whether the actor retains persistence in affected environments.
 
-## MITRE ATT&CK Table (based on v12)
+## MITRE ATT&CK Table
 
-Table of the MITRE ATT&CK tactics and techniques/sub-techniques from the campaign. The procedure column details a particular instance of how a technique/sub-technique has been used. The D3FEND column includes the corresponding MITRE D3FEND countermeasure technique, if available. If using the tool, the Tactics and Techniques can be automatically generated from an Attack Flow document using the plug-in.
-
-|Attribution|Tactics|Techniques|Sub Technique|Procedure|D3FEND|Deployed Control|
-|---|---|---|---|---|---|---|
+| Attribution |    Tactics     | Techniques | Sub-technique |                           Procedure                            | D3FEND  |          Deployed Control          |
+|:-----------:|:--------------:|:----------:|:-------------:|:--------------------------------------------------------------:|:-------:|:----------------------------------:|
+| EMBER BEAR  | initial-access |   T1078    |      N/A      | The actor used compromised VPN credentials for initial access. | D3-ANCI | MFA and impossible-travel alerting |
 
 
 ## Timeline of Activity
 
-|Attribution|Start Date|End Date|Location|Sector|Activity|
-|---|---|---|---|---|---|
+| Attribution |      Start Date      |       End Date       |       Location       |     Sector     |                                Activity                                 |
+|:-----------:|:--------------------:|:--------------------:|:--------------------:|:--------------:|:-----------------------------------------------------------------------:|
+| EMBER BEAR  | 2026-07-02T00:00:00Z | 2026-08-18T00:00:00Z | Germany, Netherlands | transportation | Credential theft and ransomware activity affecting logistics providers. |
 
 
 ## Indicators of Compromise (IOC)
 
-This section consists of three IOC tables [Malware, Network, and System Artifacts] associated with the Campaign.
-
 ### Malware
 
-This table should detail the malware and tools associated with the campaign. The "Associated Files Hash" column can include any files related to the tool or malware, e.g., downloader for a memory dropper. The "Brief Malware Description" column should provide a short description for context, as well as where the activity falls in the intrusion chain. The first and last reported fields are intended to memorialize the longevity of a particular piece of malware, providing additional insight into trends in malicious behavior.
-
-|Attribution|Malicious Tool Name|Hash Type|File Hash|Associated Files Hash|Brief Description|Malware Analysis Report (Hyperlink, or N/A)|First Reported|Last Reported|
-|---|---|---|---|---|---|---|---|---|
+| Attribution | Malicious Tool Name | Hash Type |                            File Hash                             | Associated Files Hash |                    Brief Description                     | Analysis Report |    First Reported    |    Last Reported     |
+|:-----------:|:-------------------:|:---------:|:----------------------------------------------------------------:|:---------------------:|:--------------------------------------------------------:|:---------------:|:--------------------:|:--------------------:|
+| EMBER BEAR  |     FreightLock     |  SHA-256  | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |          N/A          | Encrypts Windows file shares after privilege escalation. |       N/A       | 2026-07-02T00:00:00Z | 2026-08-18T00:00:00Z |
 
 
 ### Network
 
-This table should detail the network indicators associated with the campaign, e.g., domains and IP addresses. The "Intrusion Phase" column includes Initial Access, Command and Control, and Exfiltration. The first and last reported fields are intended to memorialize the longevity of a particular network artifact, providing additional insight into trends in malicious behavior.
-
-|Attribution|Network Artifact|Details|Intrusion Phase|First Reported|Last Reported|
-|---|---|---|---|---|---|
-
-
-### System Artifacts
-
-This table should detail any unique artifacts associated with the campaign that could be observed on a host, e.g., processes, DLLs, registry keys. The first and last reported fields are intended to memorialize the longevity of a particular system artifact, providing additional insight into trends in malicious behavior.
-
-|Attribution|Host Artifact|Type|Details|Tactic|First Reported|Last Reported|
-|---|---|---|---|---|---|---|
+| Attribution |  Network Artifact   |                     Details                     |   Intrusion Phase   |    First Reported    | Last Reported |
+|:-----------:|:-------------------:|:-----------------------------------------------:|:-------------------:|:--------------------:|:-------------:|
+| EMBER BEAR  | updates.example.net | Domain observed in command-and-control traffic. | Command and Control | 2026-07-02T00:00:00Z |    Active     |
 
 
 ## Common Vulnerabilities and Exposures (CVEs)
 
-CVEs associated with the campaign. The date reported field is designed to capture the date when the CVE became public knowledge. To adequately fill out this table, it may require information from other internal teams.
+| Attribution |  CVE Number   | CVSS Score | Patch Available |         Other Remediation         | Date Reported | Patch Applied |
+|:-----------:|:-------------:|:----------:|:---------------:|:---------------------------------:|:-------------:|:-------------:|
+| EMBER BEAR  | CVE-2025-0001 |    8.8     |        Y        | Apply the vendor security update. |  2025-01-15   |      UNK      |
 
-|Attribution|CVE Number|CVSS Score|Patch Available (Y/N)|Other Remediation|Date Reported|Patch Applied (Y/N/UNK/NA)|
-|---|---|---|---|---|---|---|
 
-
-## Signatures
-
-This section should include detections (e.g., Yara signature) that correspond to the malware or malicious activity associated with the campaign.
-
-1. Malware or malicious activity name
-  1. Detection
-2. Malware or malicious activity name
-  1. Detection
-
-_Attached Attack Flow and/or Navigator Heat Maps, if applicable_
+_Attach Attack Flow and/or Navigator heat maps when available._
 
 ## Probability Matrix
 
-We recommend that analysts properly express and explain uncertainties associated with major analytic judgments.
+The marker identifies the probability of the principal analytic judgment.
 
-|Almost no chance (01-05%)|Very unlikely (05-20%)|Unlikely (20-45%)|Roughly Even Chance (45-55%)|Likely (55-80%)|Very likely (80-95%)|Almost certain(ly) (95-99%)|
-|---|---|---|---|---|---|---|
+| Almost no chance (01–05%) | Very unlikely (05–20%) | Unlikely (20–45%) | Roughly even chance (45–55%) | Likely (55–80%) | Very likely (80–95%) | Almost certain (95–99%) |
+|:-------------------------:|:----------------------:|:-----------------:|:----------------------------:|:---------------:|:--------------------:|:-----------------------:|
+|                           |                        |                   |                              |        ●        |                      |                         |
 
 
 ## Intelligence Requirements
 
-Brief citation of CTI requirements(s) addressed by this report.
+- IR-1: Assess ransomware risk to European logistics operations.
 
 ## Feedback
 
-Provide a point of contact (e.g., an email address) for customer feedback on the published CTI report, such as whether the report addressed the customers’ Intelligence Requirements, how the report could be more actionable, additional Intelligence Requirement questions to answer, etc.
+Send feedback and follow-up requirements to cti@example.org.
 
-*Data Sources:*
+## Data Sources
 
-* Cite external CTI Report with hyperlink if available
-* Cite Internal Telemetry sources provided by the SOC as needed. This field is not designed to preserve telemetry data and should only include data necessary to justify the analytic assessments.
+- [mitre-attack](https://attack.mitre.org/techniques/T1078/) — External STIX reference
+- [Example advisory](https://example.org/advisories/ember-bear) — External STIX reference
+- [cve](https://example.org/cve/CVE-2025-0001) — External STIX reference
 
-The metadata table below is for automation purposes and provides discrete fields for tool extraction. If you are not using the tool, we recommend removing the table.
+## Report Metadata
 
-|   |   |
-|---|---|
-| **Threat Actor:** | - Primary Threat Actor Name(s) or Unknown<br/>- Associated Group Names/Aliases or N/A|
-| **Victim Location:** | - Drop-down list of countries|
-| **Sectors:** | - Drop-down list of NAICS industries|
-| **Infrastructure Used:** | - Infrastructure used by adversary|
-| **Actor Motivation:** | - Cyber Espionage, Data Theft, Cyber Crime, Ransomware, Destructive Attack, Hacktivism, Other, Unknown|
+|        Field         |        Value         |
+|:--------------------:|:--------------------:|
+|   **Threat Actor**   |      EMBER BEAR      |
+|     **Aliases**      |   Example Group 42   |
+| **Victim Location**  | Germany, Netherlands |
+|     **Sectors**      |    transportation    |
+| **Actor Motivation** | organizational-gain  |

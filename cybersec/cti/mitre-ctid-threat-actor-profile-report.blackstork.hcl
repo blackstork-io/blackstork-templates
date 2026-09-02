@@ -1,192 +1,280 @@
 document "mitre_ctid_threat_actor_profile_report" {
-
   meta {
-    name = "MITRE CTID Threat Actor Profile Report Template"
-
-    description = <<-EOT
-      Author: CTI Team
-      Audience: SOC
-      Key Decisions: Determine alert prioritization and triaging; Identify TTPs that may require new or updated detections.
-      Decision-Enabling Data Points: Context and relevance of the threat to the organization; Adversary behavior and potential goals; IOC enrichment; Associated malware and tools; Newly observed TTPs 
-
-      Author: CTI Team
-      Audience: Threat Hunt
-      Key Decisions: Conduct tailored, specific searches in the network for the reported malicious behavior.
-      Decision-Enabling Data Points: Adversary behavior and potential goals; IOC enrichment; Associated malware and tools; Observed TTPs; Difference from existing TTPs – net new capabilities, slight modifications, etc. 
-
-      Author: CTI Team
-      Audience: Red/Purple Team
-      Key Decisions: Conduct updated, threat-informed adversary emulation to better assess an organization's defensive posture against the reported malicious activity.   
-      Decision-Enabling Data Points: Adversary behavior and potential goals; IOC enrichment; Associated malware and tools; Observed TTPs 
-    EOT
-
-    url = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
-
-    license = "Apache License 2.0"
-    tags = ["mitre", "campaign"]
-
-    updated_at = "2024-01-22T10:00:01+01:00"
+    name        = "MITRE CTID Threat Actor Profile Report Template"
+    description = "A dynamic threat-actor profile Blueprint rendered from STIX 2.1 data."
+    url         = "https://github.com/center-for-threat-informed-defense/cti-blueprints"
+    license     = "Apache License 2.0"
+    tags        = ["mitre", "ctid", "threat-actor", "stix2"]
+    updated_at  = "2026-09-01T00:00:00Z"
   }
 
-  title = "Report Title*"
-
-  section ref {
-    base = section.ctid_executive_summary
+  input "use_llm" {
+    type          = "bool"
+    default_value = false
+    description   = "Use the configured LLM to synthesize narrative sections."
   }
 
-  section ref {
-    base = section.ctid_key_points
+  vars {
+    stix_bundle = {
+      type = "bundle"
+      id   = "bundle--20000000-0000-4000-8000-000000000001"
+      objects = [
+        {
+          type                = "identity", spec_version = "2.1"
+          id                  = "identity--20000000-0000-4000-8000-000000000001"
+          created             = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name                = "Example CTI Team", identity_class = "organization"
+          contact_information = "cti@example.org"
+        },
+        {
+          type                = "threat-actor", spec_version = "2.1"
+          id                  = "threat-actor--20000000-0000-4000-8000-000000000002"
+          created             = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name                = "SABLE JACKAL"
+          description         = "An advanced espionage group targeting energy and engineering organizations."
+          aliases             = ["Example Group 17"]
+          threat_actor_types  = ["nation-state"]
+          roles               = ["agent"]
+          goals               = ["Collect industrial research and strategic energy information."]
+          sophistication      = "advanced"
+          resource_level      = "government"
+          primary_motivation  = "organizational-gain"
+          first_seen          = "2021-03-01T00:00:00Z"
+          last_seen           = "2026-08-10T00:00:00Z"
+          external_references = [{ source_name = "Example actor profile", url = "https://example.org/actors/sable-jackal" }]
+        },
+        {
+          type                = "attack-pattern", spec_version = "2.1"
+          id                  = "attack-pattern--20000000-0000-4000-8000-000000000003"
+          created             = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name                = "Exploit Public-Facing Application"
+          description         = "The actor exploits internet-facing edge devices for initial access."
+          kill_chain_phases   = [{ kill_chain_name = "mitre-attack", phase_name = "initial-access" }]
+          external_references = [{ source_name = "mitre-attack", external_id = "T1190", url = "https://attack.mitre.org/techniques/T1190/" }]
+        },
+        {
+          type                 = "infrastructure", spec_version = "2.1"
+          id                   = "infrastructure--20000000-0000-4000-8000-000000000004"
+          created              = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name                 = "SABLE JACKAL relay tier"
+          description          = "Rented VPS nodes used as redirectors."
+          infrastructure_types = ["command-and-control"]
+          first_seen           = "2026-04-12T00:00:00Z", last_seen = "2026-08-10T00:00:00Z"
+        },
+        {
+          type           = "identity", spec_version = "2.1"
+          id             = "identity--20000000-0000-4000-8000-000000000005"
+          created        = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name           = "Example Northern Grid Operator"
+          identity_class = "organization"
+          sectors        = ["energy"]
+        },
+        {
+          type            = "indicator", spec_version = "2.1"
+          id              = "indicator--20000000-0000-4000-8000-000000000006"
+          created         = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name            = "Relay address", description = "VPS address used as a redirector."
+          indicator_types = ["malicious-activity"], pattern_type = "stix"
+          pattern         = "[ipv4-addr:value = '192.0.2.44']", valid_from = "2026-04-12T00:00:00Z"
+          kill_chain_phases = [
+            { kill_chain_name = "mitre-attack", phase_name = "command-and-control" }
+          ]
+        },
+        {
+          type  = "ipv4-addr", spec_version = "2.1"
+          id    = "ipv4-addr--20000000-0000-5000-8000-000000000007"
+          value = "192.0.2.44"
+        },
+        {
+          type    = "location", spec_version = "2.1"
+          id      = "location--20000000-0000-4000-8000-000000000008"
+          created = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name    = "Northern Europe", region = "northern-europe"
+        },
+        {
+          type    = "location", spec_version = "2.1"
+          id      = "location--20000000-0000-4000-8000-000000000009"
+          created = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          name    = "Central Asia", region = "central-asia"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000010"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "uses", source_ref = "threat-actor--20000000-0000-4000-8000-000000000002"
+          target_ref        = "infrastructure--20000000-0000-4000-8000-000000000004"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000011"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "targets", source_ref = "threat-actor--20000000-0000-4000-8000-000000000002"
+          target_ref        = "identity--20000000-0000-4000-8000-000000000005"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000012"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "targets", source_ref = "threat-actor--20000000-0000-4000-8000-000000000002"
+          target_ref        = "location--20000000-0000-4000-8000-000000000008"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000013"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "targets", source_ref = "threat-actor--20000000-0000-4000-8000-000000000002"
+          target_ref        = "location--20000000-0000-4000-8000-000000000009"
+        },
+        {
+          type              = "relationship", spec_version = "2.1"
+          id                = "relationship--20000000-0000-4000-8000-000000000014"
+          created           = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          relationship_type = "based-on", source_ref = "indicator--20000000-0000-4000-8000-000000000006"
+          target_ref        = "observed-data--20000000-0000-4000-8000-000000000015"
+        },
+        {
+          type            = "observed-data", spec_version = "2.1"
+          id              = "observed-data--20000000-0000-4000-8000-000000000015"
+          created         = "2026-08-24T10:00:00Z", modified = "2026-08-24T10:00:00Z"
+          first_observed  = "2026-04-12T00:00:00Z", last_observed = "2026-08-10T00:00:00Z"
+          number_observed = 7
+          object_refs     = ["ipv4-addr--20000000-0000-5000-8000-000000000007"]
+        }
+      ]
+    }
+
+    report_context = {
+      audience                  = "SOC, threat hunt, and red/purple teams"
+      probability               = "likely"
+      attribution_assessment    = "Multiple independent sources associate the cluster with a state-aligned collection requirement; attribution remains assessed, not confirmed."
+      intelligence_gaps         = ["The actor's current initial-access provider.", "Whether 2026 infrastructure represents a distinct subgroup."]
+      intelligence_requirements = ["IR-3: Track actors targeting energy-sector intellectual property."]
+      feedback_contact          = "cti@example.org"
+      attack                    = { "attack-pattern--20000000-0000-4000-8000-000000000003" = { control = "Rapid edge-device patching and exploit telemetry" } }
+      victims                   = { "identity--20000000-0000-4000-8000-000000000005" = { date_reported = "2026-07-18" } }
+    }
+
+    report = query_jq(<<-JQ
+      .vars.stix_bundle.objects as $objects |
+      .vars.report_context as $context |
+      ($objects | map(select(.type == "threat-actor")) | first) as $actor |
+      ([$objects[] | select(.type == "relationship" and .source_ref == $actor.id and .relationship_type == "targets") | .target_ref]) as $target_refs |
+      ([$objects[] | select(.type == "location" and (.id as $id | $target_refs | index($id)))]) as $locations |
+      ([$objects[] | select(.type == "identity" and (.id as $id | $target_refs | index($id)))]) as $victims |
+      ([$objects[] | select(.type == "relationship" and .source_ref == $actor.id and .relationship_type == "uses") | .target_ref]) as $infrastructure_refs |
+      ([$objects[] | select(.type == "infrastructure" and (.id as $id | $infrastructure_refs | index($id)))]) as $infrastructure |
+      {
+        title: ($actor.name + " Threat Actor Profile"), audience: $context.audience,
+        subject: $actor.description, actor: $actor, probability: $context.probability,
+        attribution_assessment: $context.attribution_assessment,
+        locations: ($locations | map(.name)),
+        sectors: ($victims | map(.sectors[]) | unique),
+        infrastructure: ($infrastructure | map(.description)),
+        intelligence_gaps: $context.intelligence_gaps,
+        intelligence_requirements: $context.intelligence_requirements,
+        feedback_contact: $context.feedback_contact,
+        attack: [$objects[] | select(.type == "attack-pattern") | {
+          attribution: $actor.name, tactic: .kill_chain_phases[0].phase_name,
+          technique: .external_references[0].external_id, subtechnique: "N/A", procedure: .description,
+          d3fend: "N/A", control: ($context.attack[.id].control // "Not provided")
+        }],
+        timeline: [{ attribution: $actor.name, start: $actor.first_seen, end: $actor.last_seen,
+          location: ($locations | map(.name) | join(", ")),
+          sector: ($victims | map(.sectors[]) | unique | join(", ")), activity: $actor.description }],
+        victims: [$victims[] | {
+          name: .name, date: ($context.victims[.id].date_reported // "Unknown"), sector: (.sectors | join(", ")),
+          locality: "N/A", country: ($locations | map(.name) | join(", "))
+        }],
+        malware: [],
+        network_indicators: [$objects[] | select(.type == "indicator") | {
+          attribution: $actor.name,
+          value: (.id as $indicator_id |
+            ($objects[] | select(.type == "relationship" and .source_ref == $indicator_id and .relationship_type == "based-on").target_ref) as $observed_id |
+            ($objects[] | select(.id == $observed_id).object_refs[0]) as $observable_id |
+            $objects[] | select(.id == $observable_id).value),
+          description: .description,
+          phase: (([.kill_chain_phases[]? | select(.kill_chain_name == "mitre-attack").phase_name] | first) // "unknown" | split("-") | map(if . == "and" then . else ((.[0:1] | ascii_upcase) + .[1:]) end) | join(" ")),
+          first_seen: .valid_from, last_seen: (.valid_until // "Active")
+        }],
+        host_indicators: [], cves: [], signatures: [],
+        sources: [$actor.external_references[] | { name: .source_name, url: .url, description: "External STIX reference" }],
+        metadata: [
+          { field: "Threat Actor", value: $actor.name }, { field: "Aliases", value: ($actor.aliases | join(", ")) },
+          { field: "Victim Location", value: ($locations | map(.name) | join(", ")) },
+          { field: "Sectors", value: ($victims | map(.sectors[]) | unique | join(", ")) },
+          { field: "Infrastructure Used", value: ($infrastructure | map(.description) | join("; ")) },
+          { field: "Actor Motivation", value: $actor.primary_motivation }
+        ]
+      }
+    JQ
+    )
   }
 
-  section ref {
-    base = section.ctid_assessment
-  }
+  title = "{{ .vars.report.title }}"
+  section ref { base = section.ctid_executive_summary }
+  section ref { base = section.ctid_key_points }
+  section ref { base = section.ctid_assessment }
 
   section "threat_actor_summary" {
-
     title = "Threat Actor Summary"
+    content text { value = "{{ .vars.report.actor.description }}" }
 
-    content text {
-      value = "This section should contain relevant information outlining the key differentiating features of the intrusion set. Start with an overarching summary: This intrusion set, associated with county Y, organization X, mainly targets sectors 1,2,3 and countries A, B, C. They have been openly tracked since XX/XX/XXXX."
-    }
-
-    section {
+    section "ttps" {
       title = "Tactics, Techniques, and Procedures"
-
       content text {
-        value = <<-EOT
-          This sub section should list out the types of tools and TTPs they leverage. This does not need to be an exhaustive list of tool names (that will be listed in the table below), but rather a description of how they operate.
-
-          EXAMPLE: Threat actor X leverages legitimate administrative tools during their intrusions to avoid detection and attribution. They primarily rely on exploitation of vulnerabilities in internet facing devices for initial access, etc.
-        EOT
+        is_included = query_jq(".inputs.use_llm | not")
+        value       = "The actor's documented behavior is summarized in the MITRE ATT&CK table below."
+      }
+      content llm_text {
+        is_included = query_jq(".inputs.use_llm")
+        config      = config.content.llm_text.ctid_analyst
+        prompt      = "Describe how the actor operates using only these STIX-derived ATT&CK rows: {{ .vars.report.attack | toPrettyJson }}"
       }
     }
-
-    section {
+    section "infrastructure" {
       title = "Infrastructure"
-
-      content text {
-        value = <<-EOT
-          This sub section should list the types of infrastructure the threat actor leverages for command and control, initial intrusion, and exfiltration from networks.
-          EXAMPLE: Threat actor X leverages VPS providers for managing C2 communication and exfiltration but prefers to compromise open exchange relays to send phishing emails for initial intrusion.
-        EOT
+      content list {
+        items         = query_jq(".vars.report.infrastructure // []")
+        format        = "unordered"
+        item_template = "{{ . }}"
       }
     }
-
-    section {
+    section "victimology" {
       title = "Victims"
-
-      content text {
-        value = <<-EOT
-          This sub section should list the countries and industries targeted by the threat actor. It should also note if there is a pattern shift in this activity over time.
-          EXAMPLE: Threat actor X primarily targeted Western Europe defense and advanced technology sectors from 2015- 2021. However, in 2022 the targeting saw a shift to include Latin America and financial services.
-        EOT
-      }
+      content text { value = "Known targeting includes {{ .vars.report.sectors | join \", \" }} in {{ .vars.report.locations | join \", \" }}." }
     }
-
-    section {
+    section "attribution" {
       title = "Attribution"
-
-      content text {
-        value = <<-EOT
-          This sub section should focus on what is known about the intrusion set from an attribution perspective. As attribution is often subjective, each organization will have to come to their own threshold for attributing activity internally. Reserve this section to discuss the known facts that could support attribution to a particular country or organization.
-          EXAMPLE: Threat actor X is attributed to China by several cybersecurity vendors because Chinese language artifacts are present in different malware utilized by the threat actor. Operating times generally correlate to China’s time zone and there is a lull in activity around major Chinese holidays. Additionally, the victims of this activity align with Chinese national interests in Southeast Asia.
-        EOT
-      }
+      content text { value = "{{ .vars.report.attribution_assessment }}" }
     }
   }
 
-  section ref {
-    base = section.ctid_timeline_of_activity
-  }
+  section ref { base = section.ctid_timeline_of_activity }
+  section ref { base = section.ctid_key_intelligence_gaps }
+  section ref { base = section.ctid_mitre_attack }
 
-  section ref {
-    base = section.ctid_key_intelligence_gaps
-  }
-
-  section ref {
-    base = section.ctid_mitre_attack
-  }
-
-  section "vistims" {
+  section "victims" {
     title = "Victims"
-
-    content text {
-      value = "This table should detail known victims, including sector and geographic location, of this threat actor."
-    }
-
     content table {
+      rows = query_jq(".vars.report.victims")
       columns = [
-        {
-          header = "Name"
-          value = ""
-        },
-        {
-          header = "Date Reported"
-          value = ""
-        },
-        {
-          header = "Sector"
-          value = ""
-        },
-        {
-          header = "City/State/Province/etc."
-          value = ""
-        },
-        {
-          header = "Country/Region"
-          value = ""
-        },
+        { header = "Name", value = "{{ .row.value.name }}" }, { header = "Date Reported", value = "{{ .row.value.date }}" },
+        { header = "Sector", value = "{{ .row.value.sector }}" }, { header = "City/State/Province", value = "{{ .row.value.locality }}" },
+        { header = "Country/Region", value = "{{ .row.value.country }}" }
       ]
     }
   }
 
-  section ref {
-    base = section.ctid_iocs
-  }
-
-  section ref {
-    base = section.ctid_cves
-  }
-
-  section ref {
-    base = section.ctid_signatures
-  }
-
-  content text {
-    value = "_Attached Attack Flow and/or Navigator Heat Maps, if applicable_"
-  }
-
-  section ref {
-    base = section.ctid_probability_matrix
-  }
-
-  section ref {
-    base = section.ctid_intel_requirements
-  }
-
-  section ref {
-    base = section.ctid_feedback
-  }
-
-  content ref {
-    base = content.text.ctid_data_sources
-  }
-
+  section ref { base = section.ctid_iocs }
+  section ref { base = section.ctid_cves }
+  section ref { base = section.ctid_signatures }
+  section ref { base = section.ctid_probability_matrix }
+  section ref { base = section.ctid_intel_requirements }
+  section ref { base = section.ctid_feedback }
+  section ref { base = section.ctid_data_sources }
   section "metadata" {
-
-    content text {
-      value = <<-EOT
-        The metadata table below is for automation purposes and provides discrete fields for tool extraction. If you are not using the tool, we recommend removing the table.
-
-        |   |   |
-        |---|---|
-        | **Threat Actor:** | - Primary Threat Actor Name(s) or Unknown<br/>- Associated Group Names/Aliases or N/A|
-        | **Victim Location:** | - Drop-down list of countries|
-        | **Sectors:** | - Drop-down list of NAICS industries|
-        | **Infrastructure Used:** | - Infrastructure used by adversary|
-        | **Actor Motivation:** | - Cyber Espionage, Data Theft, Cyber Crime, Ransomware, Destructive Attack, Hacktivism, Other, Unknown|
-      EOT
-    }
+    title = "Report Metadata"
+    content ref { base = content.table.ctid_metadata }
   }
+  format md "report" {}
 }
