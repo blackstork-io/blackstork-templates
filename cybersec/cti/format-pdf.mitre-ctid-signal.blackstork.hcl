@@ -143,31 +143,76 @@ format pdf "mitre_ctid_signal" {
     }
     h3 { margin: 0 0 6pt !important; color: #482536 !important; font-family: Georgia, "Times New Roman", serif !important; font-size: 10.5pt !important; font-weight: 600 !important; }
     h4 { margin: 0 0 5pt !important; color: #482536 !important; font-family: Georgia, "Times New Roman", serif !important; font-size: 9.5pt !important; font-weight: 600 !important; }
-    p { margin: 0 0 8pt !important; }
+    .ctid-report p { margin: 0 0 8pt !important; orphans: 2 !important; widows: 2 !important; }
     a { color: #bd4b32 !important; text-decoration: none !important; }
+    a, code { overflow-wrap: anywhere !important; word-break: break-word !important; }
     code { font-size: 7.2pt !important; }
+    pre {
+      overflow: visible !important;
+      white-space: pre-wrap !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+    blockquote {
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
     ul, ol { margin: 0 0 9pt !important; padding-left: 15pt !important; }
-    li { margin: 3pt 0 !important; padding-left: 1pt !important; }
+    .ctid-report ul > li,
+    .ctid-report ol > li {
+      margin: 3pt 0 !important;
+      padding-left: 1pt !important;
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+    }
+
+    .pdf-keep-together { break-inside: avoid-page !important; page-break-inside: avoid !important; }
+    .pdf-splittable { break-inside: auto !important; page-break-inside: auto !important; }
+    .pdf-page-break-before { break-before: page !important; page-break-before: always !important; }
 
     .ctid-bluf {
       margin-top: 0 !important;
       padding: 13pt 15pt 10pt !important;
       border-left: 3pt solid #bd4b32 !important;
       background: #faeee7 !important;
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
     .ctid-bluf h2 { margin-bottom: 7pt !important; padding: 0 !important; border: 0 !important; font-size: 12pt !important; }
     .ctid-key-points { break-inside: avoid !important; page-break-inside: avoid !important; }
-    .ctid-key-points ul { display: grid !important; grid-template-columns: 1fr 1fr !important; padding: 0 !important; }
-    .ctid-key-points li { min-height: 0 !important; padding: 7pt 9pt !important; }
+    .ctid-key-points ul {
+      display: block !important;
+      padding: 0 !important;
+      border-top: 0.6pt solid #d9cfc1 !important;
+      border-left: 0.6pt solid #d9cfc1 !important;
+      font-size: 0 !important;
+    }
+    .ctid-report .ctid-key-points li {
+      display: inline-block !important;
+      width: 50% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 7pt 9pt !important;
+      border-right: 0.6pt solid #d9cfc1 !important;
+      border-bottom: 0.6pt solid #d9cfc1 !important;
+      font-size: 8.7pt !important;
+      vertical-align: top !important;
+    }
     .ctid-probability { padding: 12pt !important; break-inside: avoid !important; page-break-inside: avoid !important; }
 
     .ctid-table-wrap {
       width: 100% !important;
       margin: 9pt 0 13pt !important;
       overflow: visible !important;
-      border: 0.6pt solid #d9cfc1 !important;
+      border: 0 !important;
       border-radius: 0 !important;
       break-inside: auto !important;
       page-break-inside: auto !important;
@@ -177,7 +222,10 @@ format pdf "mitre_ctid_signal" {
       min-width: 0 !important;
       margin: 0 !important;
       border: 0 !important;
-      border-collapse: collapse !important;
+      border-top: 0.6pt solid #d9cfc1 !important;
+      border-left: 0.6pt solid #d9cfc1 !important;
+      border-collapse: separate !important;
+      border-spacing: 0 !important;
       font-size: 7.1pt !important;
       line-height: 1.28 !important;
       break-inside: auto !important;
@@ -186,10 +234,11 @@ format pdf "mitre_ctid_signal" {
     }
     thead { display: table-header-group !important; }
     tfoot { display: table-footer-group !important; }
-    tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+    tr, td, th { break-inside: auto !important; page-break-inside: auto !important; }
     th {
       padding: 5.5pt 5pt !important;
       border-bottom: 0.8pt solid #9fb0bc !important;
+      border-right: 0.6pt solid #d9cfc1 !important;
       background: #f1e9df !important;
       color: #5b403d !important;
       font-family: Consolas, "Liberation Mono", monospace !important;
@@ -203,15 +252,23 @@ format pdf "mitre_ctid_signal" {
     td {
       padding: 5.5pt 5pt !important;
       border-bottom: 0.5pt solid #dfe6eb !important;
+      border-right: 0.6pt solid #d9cfc1 !important;
       background: #ffffff !important;
       color: #292521 !important;
       font-size: 7.1pt !important;
       text-align: left !important;
       vertical-align: top !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
     }
     tbody tr:nth-child(even) td { background: #fbf7f1 !important; }
     .ctid-probability td { color: #8b651d !important; font-size: 10pt !important; text-align: center !important; }
-    .ctid-metadata table { width: 68% !important; }
+    .ctid-metadata {
+      width: 100% !important;
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+    }
+    .ctid-metadata table { width: 100% !important; break-inside: auto !important; page-break-inside: auto !important; }
     .ctid-metadata td:first-child { width: 31% !important; background: #f6f1e8 !important; }
 
     .ctid-sources { color: #71685f !important; font-size: 7.8pt !important; }

@@ -261,7 +261,7 @@ format html "mitre_ctid_signal" {
     HTML
 
     "content.table" = <<-HTML
-      <div class="ctid-table-wrap">
+      <div class="ctid-table-wrap pdf-splittable">
         <table>
           {{ if .headers_html }}
           <thead><tr>{{ range .headers_html }}<th>{{ . }}</th>{{ end }}</tr></thead>
@@ -299,11 +299,11 @@ format html "mitre_ctid_signal" {
     HTML
 
     "section.mitre_ctid_executive_summary" = <<-HTML
-      <section class="ctid-bluf">{{ .title }}{{ .content }}</section>
+      <section class="ctid-bluf pdf-splittable">{{ .title }}{{ .content }}</section>
     HTML
 
     "section.mitre_ctid_key_points" = <<-HTML
-      <section class="ctid-key-points">{{ .title }}{{ .content }}</section>
+      <section class="ctid-key-points pdf-keep-together">{{ .title }}{{ .content }}</section>
     HTML
 
     "section.mitre_ctid_attack" = <<-HTML
@@ -323,7 +323,7 @@ format html "mitre_ctid_signal" {
     HTML
 
     "section.mitre_ctid_probability_matrix" = <<-HTML
-      <section class="ctid-probability">{{ .title }}{{ .content }}</section>
+      <section class="ctid-probability pdf-keep-together">{{ .title }}{{ .content }}</section>
     HTML
 
     "section.mitre_ctid_data_sources" = <<-HTML
@@ -331,7 +331,7 @@ format html "mitre_ctid_signal" {
     HTML
 
     "content.table.mitre_ctid_attack" = <<-HTML
-      <div class="ctid-table-wrap">
+      <div class="ctid-table-wrap pdf-splittable">
         <table>
           <thead><tr>{{ range .headers_html }}<th>{{ . }}</th>{{ end }}</tr></thead>
           <tbody>{{ range .rows_html }}<tr>{{ range . }}<td>{{ .value_html }}</td>{{ end }}</tr>{{ end }}</tbody>
@@ -340,7 +340,7 @@ format html "mitre_ctid_signal" {
     HTML
 
     "content.table.mitre_ctid_metadata" = <<-HTML
-      <div class="ctid-table-wrap ctid-metadata">
+      <div class="ctid-table-wrap ctid-metadata pdf-splittable">
         <table>
           <tbody>{{ range .rows_html }}<tr>{{ range . }}<td>{{ .value_html }}</td>{{ end }}</tr>{{ end }}</tbody>
         </table>
