@@ -364,6 +364,4 @@ document "mitre_ctid_threat_actor_profile_report" {
       value       = "No additional report metadata was provided."
     }
   }
-  format md "report" {}
-  format ref { base = format.html.mitre_ctid }
 }

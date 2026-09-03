@@ -219,6 +219,4 @@ document "mitre_ctid_executive_report" {
       value       = "No additional report metadata was provided."
     }
   }
-  format md "report" {}
-  format ref { base = format.html.mitre_ctid }
 }

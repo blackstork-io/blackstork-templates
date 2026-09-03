@@ -1,26 +1,26 @@
-format html "mitre_ctid" {
+format html "mitre_ctid_signal" {
   meta {
-    name        = "MITRE CTI Blueprint HTML Format"
-    description = "A professional web format for decision-oriented cyber threat intelligence reports."
+    name        = "MITRE CTI Blueprint HTML Format — Signal"
+    description = "A warm editorial web format for decision-oriented cyber threat intelligence reports."
     license     = "Apache License 2.0"
     authors     = ["Sergey Polzunov <sergey@blackstork.io>"]
-    tags        = ["mitre", "ctid", "html", "threat-intelligence"]
+    tags        = ["mitre", "ctid", "html", "signal", "threat-intelligence"]
     updated_at  = "2026-09-03T00:00:00Z"
   }
 
   css_inline = <<-CSS
     :root {
-      --ctid-ink: #102a43;
-      --ctid-navy: #071826;
-      --ctid-teal: #007f82;
-      --ctid-teal-soft: #e8f5f4;
-      --ctid-amber: #b7791f;
-      --ctid-amber-soft: #fff8e8;
-      --ctid-paper: #ffffff;
-      --ctid-canvas: #eef2f5;
-      --ctid-subtle: #f6f8fa;
-      --ctid-line: #d7e0e7;
-      --ctid-muted: #627586;
+      --ctid-ink: #292521;
+      --ctid-navy: #482536;
+      --ctid-teal: #bd4b32;
+      --ctid-teal-soft: #faeee7;
+      --ctid-amber: #8b651d;
+      --ctid-amber-soft: #fbf3dd;
+      --ctid-paper: #fffdf8;
+      --ctid-canvas: #e9e3d9;
+      --ctid-subtle: #f6f1e8;
+      --ctid-line: #d9cfc1;
+      --ctid-muted: #71685f;
       --ctid-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       --ctid-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
     }
@@ -43,8 +43,8 @@ format html "mitre_ctid" {
       overflow: hidden;
       background: var(--ctid-paper);
       border: 1px solid var(--ctid-line);
-      border-radius: 8px;
-      box-shadow: 0 16px 42px rgb(7 24 38 / 0.08);
+      border-radius: 2px;
+      box-shadow: 0 18px 50px rgb(72 37 54 / 0.10);
     }
 
     .ctid-web-header,
@@ -53,30 +53,23 @@ format html "mitre_ctid" {
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      background: var(--ctid-navy);
+      background: var(--ctid-paper);
+      border-top: 6px solid var(--ctid-navy);
+      border-bottom: 1px solid var(--ctid-line);
       color: #fff;
       padding: 18px 52px;
     }
     .ctid-wordmark { display: flex; align-items: center; gap: 12px; }
     .ctid-mark {
-      position: relative;
       width: 30px;
       height: 30px;
-      border: 2px solid #7ce0dc;
-      border-radius: 50%;
+      flex: 0 0 auto;
+      color: var(--ctid-teal);
     }
-    .ctid-mark::before,
-    .ctid-mark::after {
-      position: absolute;
-      content: "";
-      background: #7ce0dc;
-    }
-    .ctid-mark::before { width: 2px; height: 38px; left: 12px; top: -6px; transform: rotate(45deg); }
-    .ctid-mark::after { width: 7px; height: 7px; right: -2px; top: 2px; border-radius: 50%; }
-    .ctid-name { font-size: 15px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; }
+    .ctid-name { color: var(--ctid-navy); font-family: Georgia, "Times New Roman", serif; font-size: 18px; font-weight: 700; letter-spacing: 0.035em; text-transform: uppercase; }
     .ctid-practice,
     .ctid-handling {
-      color: #b8c8d3;
+      color: var(--ctid-muted);
       font-family: var(--ctid-mono);
       font-size: 11px;
       font-weight: 500;
@@ -86,17 +79,17 @@ format html "mitre_ctid" {
 
     .ctid-hero {
       position: relative;
-      padding: 64px 52px 52px;
+      padding: 72px 52px 58px;
       border-bottom: 1px solid var(--ctid-line);
       background:
-        linear-gradient(90deg, rgb(232 245 244 / 0.9), rgb(255 255 255 / 0) 58%),
+        linear-gradient(110deg, rgb(250 238 231 / 0.95), rgb(255 253 248 / 0) 65%),
         var(--ctid-paper);
     }
     .ctid-hero::after {
       position: absolute;
-      right: 52px;
+      left: 52px;
       bottom: -1px;
-      width: 180px;
+      width: 96px;
       height: 4px;
       content: "";
       background: var(--ctid-teal);
@@ -114,19 +107,20 @@ format html "mitre_ctid" {
       max-width: 850px;
       margin: 0;
       color: var(--ctid-navy);
-      font-size: clamp(34px, 5vw, 54px);
-      font-weight: 600;
-      letter-spacing: -0.035em;
-      line-height: 1.07;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(38px, 5vw, 58px);
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      line-height: 1.04;
     }
     .ctid-hero-note { margin: 22px 0 0; color: var(--ctid-muted); font-size: 17px; }
     .ctid-hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
     .ctid-tag {
       padding: 5px 9px;
-      border: 1px solid #afd7d5;
+      border: 1px solid #dfb7aa;
       border-radius: 3px;
       background: rgb(255 255 255 / 0.65);
-      color: #155e61;
+      color: #7d3427;
       font-family: var(--ctid-mono);
       font-size: 10px;
       font-weight: 600;
@@ -139,13 +133,13 @@ format html "mitre_ctid" {
     .ctid-content > .ctid-hero { margin: 0 -52px; }
     section { margin: 48px 0 0; }
     section section { margin-top: 30px; }
-    h2, h3, h4 { color: var(--ctid-navy); line-height: 1.25; }
+    h2, h3, h4 { color: var(--ctid-navy); font-family: Georgia, "Times New Roman", serif; line-height: 1.25; }
     h2 {
       margin: 0 0 22px;
       padding: 0 0 10px;
       border-bottom: 1px solid var(--ctid-line);
       font-size: 25px;
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: -0.018em;
     }
     h3 { margin: 0 0 14px; font-size: 19px; font-weight: 600; }
@@ -181,8 +175,8 @@ format html "mitre_ctid" {
     th {
       padding: 11px 12px;
       border-bottom: 1px solid #b9c6d0;
-      background: #edf2f5;
-      color: #304b5f;
+      background: #f1e9df;
+      color: #5b403d;
       font-family: var(--ctid-mono);
       font-size: 10px;
       font-weight: 600;
@@ -192,8 +186,8 @@ format html "mitre_ctid" {
       vertical-align: bottom;
       white-space: nowrap;
     }
-    td { padding: 12px; border-bottom: 1px solid #e3e9ee; text-align: left; vertical-align: top; }
-    tbody tr:nth-child(even) td { background: #fafcfd; }
+    td { padding: 12px; border-bottom: 1px solid #e7ded2; text-align: left; vertical-align: top; }
+    tbody tr:nth-child(even) td { background: #fcf8f2; }
     tbody tr:last-child td { border-bottom: 0; }
     .ctid-mitre-table table,
     .ctid-ioc-section table { min-width: 1040px; }
@@ -234,15 +228,16 @@ format html "mitre_ctid" {
     .ctid-metadata table { width: auto; min-width: min(100%, 650px); }
     .ctid-metadata td:first-child { width: 210px; background: var(--ctid-subtle); }
 
-    .ctid-web-footer { padding-top: 15px; padding-bottom: 15px; }
-    .ctid-web-footer a { color: #d8e6ed; text-decoration: none; }
+    .ctid-web-footer { background: var(--ctid-navy); border: 0; padding-top: 15px; padding-bottom: 15px; }
+    .ctid-web-footer .ctid-handling { color: #eadde1; }
+    .ctid-web-footer a { color: #f5e9dc; text-decoration: none; }
 
     @media (max-width: 720px) {
       .ctid-report { width: 100%; margin: 0; border: 0; border-radius: 0; }
       .ctid-web-header, .ctid-web-footer { padding: 16px 22px; }
       .ctid-practice { display: none; }
       .ctid-hero { padding: 48px 22px 40px; }
-      .ctid-hero::after { right: 22px; }
+      .ctid-hero::after { left: 22px; }
       .ctid-content { padding: 8px 22px 48px; }
       .ctid-content > .ctid-web-header { margin: -8px -22px 0; }
       .ctid-content > .ctid-hero { margin: 0 -22px; }
@@ -261,7 +256,6 @@ format html "mitre_ctid" {
         <main class="ctid-content">{{ .content }}</main>
         <footer class="ctid-web-footer">
           <span class="ctid-handling">Cyber Threat Intelligence</span>
-          <span class="ctid-handling">Professional intelligence product</span>
         </footer>
       </article>
     HTML
@@ -286,7 +280,9 @@ format html "mitre_ctid" {
     "content.table.mitre_ctid_report_identity" = <<-HTML
       <header class="ctid-web-header">
         <div class="ctid-wordmark">
-          <span class="ctid-mark" aria-hidden="true"></span>
+          <svg class="ctid-mark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+          </svg>
           <span class="ctid-name">{{ (index (index .rows_html 1) 1).value_html }}</span>
         </div>
         <div class="ctid-practice">{{ (index (index .rows_html 2) 1).value_html }} / {{ (index (index .rows_html 3) 1).value_html }}</div>
